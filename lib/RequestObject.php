@@ -17,11 +17,15 @@ namespace Heidelpay\PhpBasketApi;
 
 class RequestObject {
     /**
-     * authentication parameter
-     * @var \Heidelpay\PhpBasketApi\Object\Authentication
+     * authentication object
+     * @var \Heidelpay\PhpBasketApi\Object\AuthenticationObject
      */
     protected $authentication = NULL;
-    
+    /**
+     * basket object
+     * @var \Heidelpay\PhpBasketApi\Object\BasketObject
+     */
     protected $basket = NULL;
     
+    public function setAuthentication(\Hei)
 }
