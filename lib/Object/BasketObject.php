@@ -54,7 +54,7 @@ class BasketObject {
      * The total item count of the whole basket
      * @var long $itemCount
      */
-    protected $itemCount = NULL;
+    protected $itemCount = 0;
     /**
      * A note sent from your application
      * @var string $note
@@ -141,9 +141,10 @@ class BasketObject {
      * @param \Heidelpay\PhpBasketApi\Object\Item $item
      * @return \Heidelpay\PhpBasketApi\Object\BasketObject
      */ 
-    public function addBasketItem(\Heidelpay\PhpBasketApi\Object\Item $item)
+    public function addBasketItem(\Heidelpay\PhpBasketApi\Object\ItemObject $item)
     {
     	$this->basketItems[] = $item;
+    	$this->setItemCount($this->getItemCount() + 1); 
     	return $this;
     }
     /**
@@ -151,7 +152,7 @@ class BasketObject {
      * @param \Heidelpay\PhpBasketApi\Object\Item $item
      * @return \Heidelpay\PhpBasketApi\Object\BasketObject
      */
-    public function updateBasketItemById($ItemId, \Heidelpay\PhpBasketApi\Object\Item $item)
+    public function updateBasketItemById($ItemId, \Heidelpay\PhpBasketApi\Object\ItemObject $item)
     {
     	if (array_key_exists($ItemId, $this->basketItems)){
     		$this->basketItems[$ItemId] = $item;
@@ -161,10 +162,11 @@ class BasketObject {
     	throw new \Exception('Bastekt item with id '.(int)$ItemId.' does not exist.');
     }
     
-    public function deletBsketItemById($ItemId)
+    public function deletBasketItemById($ItemId)
     {
     	if (array_key_exists($ItemId, $this->basketItems)) {
-    		$this->basketItems[$ItemId] = NULL;
+    		unset($this->basketItems[$ItemId]);
+    		$this->setItemCount($this->getItemCount() - 1);
     		return $this;
     	}
     	
@@ -245,6 +247,6 @@ class BasketObject {
     public function setNote($value)
     {
     	$this->note = $value;
-    	return $note;
+    	return $this;
     }
 }

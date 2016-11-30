@@ -26,6 +26,23 @@ class RequestObject {
      * @var \Heidelpay\PhpBasketApi\Object\BasketObject
      */
     protected $basket = NULL;
-    
-    public function setAuthentication(\Hei)
+ 	/**
+ 	 * set authentication object
+ 	 * @return \Heidelpay\PhpBasketApi\RequestObject
+ 	 */   
+    public function setAuthentication()
+    {
+    	$this->authentication = new \Heidelpay\PhpBasketApi\Object\AuthenticationObject();
+    	return $this;
+    }
+    /**
+     * authentification getter
+     * @return \Heidelpay\PhpBasketApi\Object\AuthenticationObject
+     */
+    public function getAuthentication(){
+    	if($this->authentication === NULL) {
+    		return new \Heidelpay\PhpBasketApi\Object\AuthenticationObject();
+    	}
+    	return $this->authentication;
+    }
 }
