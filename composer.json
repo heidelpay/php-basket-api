@@ -1,41 +1,42 @@
 {
-	"name" : "heidelpay/php-basket-api",
-	"description" : "Client library for heidelpay basket api.",
-	"license" : "Use of this software requires acceptance of the License Agreement. See LICENSE file.",
-	"version" : "16.11.9",
-	"authors" : [{
-			"name" : "Jens Richter"
-		}
-	],
-	"require" : {
-		"php" : "~5.6.0|~7.0.0",
-		"lib-curl" : ">=7.26.0",
-		"lib-openssl" : ">=1.0.1.5"
-	},
-	"require-dev" : {
-		"phpunit/phpunit" : "~5"
-	},
-	"autoload" : {
-		"psr-4" : {
-			"Heidelpay\\PhpBasketApi\\" : "lib"
-		},
-		"autoload-dev" : {
-			"psr-4" : {
-				"Heidelpay\\Test\\PhpBasketApi\\" : "test/",
-				"Heidelpay\\Example\\PhpBasketApi\\" : "example/"
-			}
-		}
-	},
-	"support" : {
-		"email" : "development@heidelpay.de"
-	},
-	"homepage" : "https://dev.heidelpay.de",
-	"minimum-stability" : "dev",
-	"type" : "library",
-	"keywords" : [
-		"php",
-		"api",
-		"sdk",
-		"basket-api"
-	]
+  "name": "heidelpay/php-basket-api",
+  "description": "Client library for heidelpay basket api.",
+  "license": "Use of this software requires acceptance of the License Agreement. See LICENSE file.",
+  "version": "16.11.9",
+  "authors": [
+    {
+      "name": "Jens Richter"
+    }
+  ],
+  "require": {
+    "php": "~5.6.0|~7.0.0",
+    "lib-curl": ">=7.26.0",
+    "lib-openssl": ">=1.0.1.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Heidelpay\\PhpBasketApi\\": "lib"
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Heidelpay\\Test\\PhpBasketApi\\": "test/",
+        "Heidelpay\\Example\\PhpBasketApi\\": "example/"
+      }
+    }
+  },
+  "support": {
+    "email": "development@heidelpay.de"
+  },
+  "homepage": "https://dev.heidelpay.de",
+  "minimum-stability": "dev",
+  "type": "library",
+  "keywords": [
+    "php",
+    "api",
+    "sdk",
+    "basket-api"
+  ]
 }
