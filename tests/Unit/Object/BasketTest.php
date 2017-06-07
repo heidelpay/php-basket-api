@@ -1,7 +1,8 @@
 <?php
 
-namespace Heidelpay\Tests\Unit\PhpBasketApi\Object;
+namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketItemIdException;
 use Heidelpay\PhpBasketApi\Object\Basket;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
@@ -16,17 +17,26 @@ use PHPUnit\Framework\TestCase;
  */
 class BasketTest extends TestCase
 {
+    /** @var Basket the testing fixture */
+    protected $basket;
+
+    /**
+     * Sets up the Basket fixture
+     */
+    public function setUp()
+    {
+        $this->basket = new Basket();
+    }
+
     /**
      * getter and setter test for amountTotal
      */
     public function testAmountTotal()
     {
-        $value = '20.21';
+        $value = 2021;
 
-        $object = new Basket();
-        $object->setAmountTotal($value);
-
-        $this->assertEquals($value, $object->getAmountTotal());
+        $this->basket->setAmountTotal($value);
+        $this->assertEquals($value, $this->basket->getAmountTotal());
     }
 
     /**
@@ -34,12 +44,10 @@ class BasketTest extends TestCase
      */
     public function testAmountTotalNet()
     {
-        $value = '20';
+        $value = 20;
 
-        $object = new Basket();
-        $object->setAmountTotalNet($value);
-
-        $this->assertSame(floatval($value), $object->getAmountTotalNet());
+        $this->basket->setAmountTotalNet($value);
+        $this->assertSame($value, $this->basket->getAmountTotalNet());
     }
 
     /**
@@ -47,70 +55,63 @@ class BasketTest extends TestCase
      */
     public function testAmountTotalVat()
     {
-        $value = '7.00';
+        $value = 7;
 
-        $object = new Basket();
-        $object->setAmountTotalVat($value);
-
-        $this->assertSame(floatval($value), $object->getAmountTotalVat());
+        $this->basket->setAmountTotalVat($value);
+        $this->assertSame($value, $this->basket->getAmountTotalVat());
     }
 
-    public function testBasketItems()
+    public function testAddAndDeleteBasketItems()
     {
-        $object = new Basket();
-
         $item = new BasketItem();
 
-        $object->addBasketItem($item);
-        $object->addBasketItem($item);
-        $object->addBasketItem($item);
+        $this->basket->addBasketItem($item);
+        $this->basket->addBasketItem($item);
+        $this->basket->addBasketItem($item);
 
         /* test for single item object */
-        $result = (array_key_exists('0', $object->getAllBasketItems())) ? true : false;
+        $result = (array_key_exists(0, $this->basket->getAllBasketItems())) ? true : false;
         $this->assertTrue($result, 'Object does not contain an item');
 
         /* Test for multible item objects */
 
         /* test update item object by id */
         $title = 'fish and chips';
-        $object->updateBasketItemById(1, $item->setTitle($title));
-        $this->assertEquals($title, $object->getBasketItemById(1)->title);
+        $this->basket->updateBasketItemById(1, $item->setTitle($title));
+        $this->assertEquals($title, $this->basket->getBasketItemById(1)->getTitle());
 
         /* test delete item object form basket  */
-        $object->deletBasketItemById(1);
-        $result = (array_key_exists('0', $object->getAllBasketItems())) ? true : false;
+        $this->basket->deleteBasketItemById(1);
+        $result = (array_key_exists(0, $this->basket->getAllBasketItems())) ? true : false;
         $this->assertTrue($result, 'More then one item has been deleted');
 
-        $result = (array_key_exists('1', $object->getAllBasketItems())) ? true : false;
+        $result = (array_key_exists(1, $this->basket->getAllBasketItems())) ? true : false;
         $this->assertFalse($result, 'Item object has not been removed from basket');
+
+        $this->expectException(InvalidBasketItemIdException::class);
+        $this->basket->getBasketItemById(1);
     }
 
     /**
      * test basket reference id
      */
-
     public function testBasketReferenceId()
     {
         $value = '26343294';
 
-        $object = new Basket();
-        $object->setBasketReferenceId($value);
-
-        $this->assertEquals($value, $object->getBasketReferenceId());
+        $this->basket->setBasketReferenceId($value);
+        $this->assertEquals($value, $this->basket->getBasketReferenceId());
     }
 
     /**
      * test currency code
      */
-
     public function testCurrencyCode()
     {
         $value = 'EUR';
 
-        $object = new Basket();
-        $object->setCurrencyCode($value);
-
-        $this->assertEquals($value, $object->getCurrencyCode());
+        $this->basket->setCurrencyCode($value);
+        $this->assertEquals($value, $this->basket->getCurrencyCode());
     }
 
     /**
@@ -118,19 +119,18 @@ class BasketTest extends TestCase
      */
     public function testItemCount()
     {
-        $object = new Basket();
-        $this->assertEquals(0, $object->getItemCount());
+        $this->assertEquals(0, $this->basket->getItemCount());
 
         $item = new BasketItem();
-        $object->addBasketItem($item);
-        $this->assertEquals(1, $object->getItemCount());
+        $this->basket->addBasketItem($item);
+        $this->assertEquals(1, $this->basket->getItemCount());
 
-        $object->addBasketItem($item);
-        $this->assertEquals(2, $object->getItemCount());
+        $this->basket->addBasketItem($item);
+        $this->assertEquals(2, $this->basket->getItemCount());
 
         /* delect one item from object */
-        $object->deletBasketItemById(1);
-        $this->assertEquals(1, $object->getItemCount());
+        $this->basket->deleteBasketItemById(1);
+        $this->assertEquals(1, $this->basket->getItemCount());
     }
 
     /**
@@ -140,9 +140,7 @@ class BasketTest extends TestCase
     {
         $value = 'Customer basket';
 
-        $object = new Basket();
-        $object->setNote($value);
-
-        $this->assertEquals($value, $object->getNote());
+        $this->basket->setNote($value);
+        $this->assertEquals($value, $this->basket->getNote());
     }
 }

@@ -2,8 +2,6 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use JsonSerializable;
-
 /**
  *  Item object for heidelpay api
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
@@ -12,99 +10,107 @@ use JsonSerializable;
  * @author Jens Richter
  * @package heidelpay\php-basket-api\object
  */
-class BasketItem implements JsonSerializable
+class BasketItem extends AbstractObject
 {
     /**
      * The position of the item in the basket (optional)
      * @var int $position
      */
-    public $position = null;
+    protected $position = null;
 
     /**
      * The unique basketitem reference id (mandatory)
      * @var string $basketitemReferenceId
      */
-    public $basketitemReferenceId = null;
+    protected $basketitemReferenceId = null;
 
     /**
      * The unit description of the item e.g. "Stk." (optional)
      * @var string $unit
      */
-    public $unit = null;
+    protected $unit = null;
 
     /**
      * The quantity of the basket item (mandatory)
      * @var int $quantity
      */
-    public $quantity = null;
+    protected $quantity = null;
 
     /**
      * The discount amount for the basket item (optinal)
      * @var int $amountDiscount
      */
-    public $amountDiscount = null;
+    protected $amountDiscount = null;
 
     /**
      * The vat value for the basket item in percent (conditional)
      * @var int $vat
      */
-    public $vat = null;
+    protected $vat = null;
 
     /**
      * The gross amount (conditional)
      * amountNet + amountVat. This value could be the same value as the net amount if the vat value is 0
      * @var int $amountGross
      */
-    public $amountGross = null;
+    protected $amountGross = null;
 
     /**
      * The vat amount, this value could be 0 if the vat value is 0 (conditional)
      * @var int $amountVat
      */
-    public $amountVat = null;
+    protected $amountVat = null;
 
     /**
      * The amount per unit (mandatory)
      * @var int $amountPerUnit
      */
-    public $amountPerUnit = null;
+    protected $amountPerUnit = null;
 
     /**
      * The net amount (mandatory)
      * This value could be the same value as the gross amount if the vat value is 0
      * @var int $amountNet
      */
-    public $amountNet = null;
+    protected $amountNet = null;
 
     /**
      * The shop article id for the basket item (optional)
      * @var string $articleId
      */
-    public $articleId = null;
+    protected $articleId = null;
 
     /**
      * The type of the basket item, e.g. "goods", "shipment", "voucher", "digital" or "physical" (optional)
      * @var string $type
      */
-    public $type = null;
+    protected $type = null;
 
     /**
      * The title of the basket item (mandatory)
      * @var string $title
      */
-    public $title = null;
+    protected $title = null;
 
     /**
      * A description for the basket item (optional)
      * @var string $description
      */
-    public $description = null;
+    protected $description = null;
 
     /**
      * A image url e.g. https://placehold.it/32x32 (optional)
      * @var string $imageUrl
      */
-    public $imageUrl = null;
+    protected $imageUrl = null;
+
+    /**
+     * Attributes that are mandatory for every BasketItem
+     * @var array
+     */
+    protected $mandatory = [
+        'basketitemReferenceId', 'quantity', 'amountPerUnit', 'amountNet', 'title'
+    ];
 
     /**
      * Amount discount setter
@@ -164,7 +170,7 @@ class BasketItem implements JsonSerializable
      */
     public function setAmountVat($value)
     {
-        $this->amountNet = $value;
+        $this->amountVat = $value;
         return $this;
     }
 
@@ -301,12 +307,123 @@ class BasketItem implements JsonSerializable
     }
 
     /**
-     * Returns the Json representation of the BasketItem object.
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
      * @return string
      */
-    public function toJson()
+    public function getBasketitemReferenceId()
     {
-        return json_encode($this->jsonSerialize());
+        return $this->basketitemReferenceId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountDiscount()
+    {
+        return $this->amountDiscount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountGross()
+    {
+        return $this->amountGross;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountVat()
+    {
+        return $this->amountVat;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountPerUnit()
+    {
+        return $this->amountPerUnit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountNet()
+    {
+        return $this->amountNet;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArticleId()
+    {
+        return $this->articleId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageUrl()
+    {
+        return $this->imageUrl;
     }
 
     /**

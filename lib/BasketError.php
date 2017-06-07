@@ -2,6 +2,8 @@
 
 namespace Heidelpay\PhpBasketApi;
 
+use Heidelpay\PhpBasketApi\Object\AbstractObject;
+
 /**
  * Respresentation of the heidelpay Basket API Error
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
@@ -10,7 +12,7 @@ namespace Heidelpay\PhpBasketApi;
  * @author Stephano Vogel
  * @package heidelpay\php-basket-api\interaction\object
  */
-class BasketError
+class BasketError extends AbstractObject
 {
     /**
      * @var string error code
@@ -62,5 +64,16 @@ class BasketError
         $this->message = $message;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'code' => $this->code,
+            'message' => $this->message
+        ];
     }
 }

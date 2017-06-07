@@ -1,6 +1,6 @@
 <?php
 
-namespace Heidelpay\Tests\Unit\PhpBasketApi\Object;
+namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
 use Heidelpay\PhpBasketApi\Object\Authentication;
 use PHPUnit\Framework\TestCase;
@@ -15,6 +15,17 @@ use PHPUnit\Framework\TestCase;
  */
 class AuthenticationTest extends TestCase
 {
+    /** @var Authentication the testing fixture */
+    protected $authentication;
+
+    /**
+     * Sets up the Authentication fixture
+     */
+    public function setUp()
+    {
+        $this->authentication = new Authentication();
+    }
+
     /**
      * Login test
      */
@@ -22,10 +33,16 @@ class AuthenticationTest extends TestCase
     {
         $value = '31ha07bc813e35b1a4e0207aea2a151e';
 
-        $object = new Authentication();
-        $object->setLogin($value);
+        $this->assertNull($this->authentication->getLogin());
 
-        $this->assertEquals($value, $object->login);
+        $this->authentication->setLogin($value);
+        $this->assertEquals($value, $this->authentication->getLogin());
+
+        $this->authentication->setLogin(null);
+        $this->assertEquals(null, $this->authentication->getLogin());
+
+        $this->authentication->setLogin($value);
+        $this->assertEquals($value, $this->authentication->getLogin());
     }
 
     /**
@@ -35,10 +52,10 @@ class AuthenticationTest extends TestCase
     {
         $value = '3E3834A7';
 
-        $object = new Authentication();
-        $object->setPassword($value);
+        $this->assertNull($this->authentication->getPassword());
 
-        $this->assertEquals($value, $object->password);
+        $this->authentication->setPassword($value);
+        $this->assertEquals($value, $this->authentication->getPassword());
     }
 
     /**
@@ -48,10 +65,10 @@ class AuthenticationTest extends TestCase
     {
         $value = '31HA07BC813E35B1A4E034FE5EF89A24';
 
-        $object = new Authentication();
-        $object->setSender($value);
+        $this->assertNull($this->authentication->getSender());
 
-        $this->assertEquals($value, $object->sender);
+        $this->authentication->setSender($value);
+        $this->assertEquals($value, $this->authentication->getSender());
     }
 
     /**
@@ -63,13 +80,19 @@ class AuthenticationTest extends TestCase
         $password = '3E3834A7';
         $senderId = '31HA07BC813E35B1A4E034FE5EF89A24';
 
-        $object = new Authentication();
-        $object->setLogin($login);
-        $object->setPassword($password);
-        $object->setSender($senderId);
+        // assignment with setters
+        $this->authentication->setLogin($login);
+        $this->authentication->setPassword($password);
+        $this->authentication->setSender($senderId);
 
-        $this->assertEquals($login, $object->login);
-        $this->assertEquals($password, $object->password);
-        $this->assertEquals($senderId, $object->sender);
+        $this->assertEquals($login, $this->authentication->getLogin());
+        $this->assertEquals($password, $this->authentication->getPassword());
+        $this->assertEquals($senderId, $this->authentication->getSender());
+
+        // assignment with constructor parameters
+        $object = new Authentication($login, $password, $senderId);
+        $this->assertEquals($login, $object->getLogin());
+        $this->assertEquals($password, $object->getPassword());
+        $this->assertEquals($senderId, $object->getSender());
     }
 }

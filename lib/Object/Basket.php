@@ -2,7 +2,7 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use JsonSerializable;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketItemIdException;
 
 /**
  * heidelpay Basket
@@ -13,28 +13,28 @@ use JsonSerializable;
  * @author Jens Richter
  * @package heidelpay\php-basket-api\object
  */
-class Basket implements JsonSerializable
+class Basket extends AbstractObject
 {
     /**
      * The total amount of the whole basket without Tax
-     * @var float total net amount
+     * @var int total net amount
      */
     protected $amountTotal = null;
 
     /**
      * The total amount of the whole basket without Tax
-     * @var float $amountTotalNet
+     * @var int $amountTotalNet
      */
     protected $amountTotalNet = null;
 
     /**
-     * @var float $amountTotalVat
+     * @var int $amountTotalVat
      */
     protected $amountTotalVat = null;
 
     /**
      * The total discount amount of the whole basket
-     * @var float $amountTotalDiscount
+     * @var int $amountTotalDiscount
      */
     protected $amountTotalDiscount = null;
 
@@ -57,20 +57,22 @@ class Basket implements JsonSerializable
     protected $currencyCode = null;
 
     /**
-     * The total item count of the whole basket
-     * @var int $itemCount
-     */
-    protected $itemCount = 0;
-
-    /**
      * A note sent from your application
      * @var string $note
      */
     protected $note = null;
 
     /**
+     * Attributes that are mandatory for the Basket
+     * @var array
+     */
+    protected $mandatory = [
+        'amountTotal', 'currencyCode', 'basketItems'
+    ];
+
+    /**
      * Amount total getter
-     * @return float
+     * @return int
      */
     public function getAmountTotal()
     {
@@ -80,19 +82,19 @@ class Basket implements JsonSerializable
     /**
      * Amount total setter
      *
-     * @param float $value
+     * @param int $value
      *
      * @return $this
      */
     public function setAmountTotal($value)
     {
-        $this->amountTotal = floatval($value);
+        $this->amountTotal = $value;
         return $this;
     }
 
     /**
      * Amount total net getter
-     * @return float
+     * @return int
      */
     public function getAmountTotalNet()
     {
@@ -102,19 +104,19 @@ class Basket implements JsonSerializable
     /**
      * Amount totla net setter
      *
-     * @param float $value
+     * @param int $value
      *
      * @return $this
      */
     public function setAmountTotalNet($value)
     {
-        $this->amountTotalNet = floatval($value);
+        $this->amountTotalNet = $value;
         return $this;
     }
 
     /**
      * Amount total vat getter
-     * @return float
+     * @return int
      */
     public function getAmountTotalVat()
     {
@@ -124,13 +126,13 @@ class Basket implements JsonSerializable
     /**
      * Amount total vat setter
      *
-     * @param $value
+     * @param int $value
      *
      * @return $this
      */
     public function setAmountTotalVat($value)
     {
-        $this->amountTotalVat = floatval($value);
+        $this->amountTotalVat = $value;
         return $this;
     }
 
@@ -157,7 +159,7 @@ class Basket implements JsonSerializable
             return $this->basketItems[$itemId];
         }
 
-        throw new \Exception("Basket item with id " . $itemId . " does not exist.");
+        throw new InvalidBasketItemIdException("Basket item with id " . $itemId . " does not exist.");
     }
 
     /**
@@ -170,7 +172,6 @@ class Basket implements JsonSerializable
     public function addBasketItem(BasketItem $item)
     {
         $this->basketItems[] = $item;
-        $this->increaseItemCount();
         return $this;
     }
 
@@ -190,7 +191,7 @@ class Basket implements JsonSerializable
             return $this;
         }
 
-        throw new \Exception('Bastekt item with id ' . $itemId . ' does not exist.');
+        throw new InvalidBasketItemIdException('Basket item with id ' . $itemId . ' does not exist.');
     }
 
     /**
@@ -201,15 +202,14 @@ class Basket implements JsonSerializable
      * @throws \Exception
      * @return $this
      */
-    public function deletBasketItemById($itemId)
+    public function deleteBasketItemById($itemId)
     {
         if (array_key_exists($itemId, $this->basketItems)) {
             unset($this->basketItems[$itemId]);
-            $this->setItemCount($this->getItemCount() - 1);
             return $this;
         }
 
-        throw new \Exception('No item to delete');
+        throw new InvalidBasketItemIdException('Basket item with id ' . $itemId . ' does not exist.');
     }
 
     /**
@@ -262,40 +262,7 @@ class Basket implements JsonSerializable
      */
     public function getItemCount()
     {
-        return $this->itemCount;
-    }
-
-    /**
-     * Item count setter
-     *
-     * @param int $value
-     *
-     * @return $this
-     */
-    public function setItemCount($value)
-    {
-        $this->itemCount = (int)$value;
-        return $this;
-    }
-
-    /**
-     * Increases the Basket item count by one.
-     * @return $this
-     */
-    public function increaseItemCount()
-    {
-        $this->itemCount++;
-        return $this;
-    }
-
-    /**
-     * Decreases the Basket item count by one.
-     * @return $this
-     */
-    public function decreaseItemCount()
-    {
-        $this->itemCount--;
-        return $this;
+        return count($this->basketItems);
     }
 
     /**
@@ -321,15 +288,6 @@ class Basket implements JsonSerializable
     }
 
     /**
-     * Returns the Json representation of the Basket object.
-     * @return string
-     */
-    public function toJson()
-    {
-        return json_encode($this->jsonSerialize());
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize()
@@ -340,7 +298,7 @@ class Basket implements JsonSerializable
             'amountTotalDiscount' => $this->amountTotalDiscount,
             'basketReferenceId' => $this->basketReferenceId,
             'currencyCode' => $this->currencyCode,
-            'itemCount' => $this->itemCount,
+            'itemCount' => $this->getItemCount(),
             'note' => $this->note,
             'basketItems' => array_values($this->basketItems)
         ];

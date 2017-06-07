@@ -2,6 +2,8 @@
 
 namespace Heidelpay\PhpBasketApi;
 
+use Heidelpay\PhpBasketApi\Object\AbstractObject;
+
 /**
  * Representation of the heidelpay Basket API Response
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
@@ -10,7 +12,7 @@ namespace Heidelpay\PhpBasketApi;
  * @author Stephano Vogel
  * @package heidelpay\php-basket-api\interaction\object
  */
-class Response
+class Response extends AbstractObject
 {
     /**
      * @var string ACK result code
@@ -51,6 +53,23 @@ class Response
      * @var BasketError[] array of response errors
      */
     protected $basketErrors;
+
+    /**
+     * Response constructor.
+     *
+     * The response should be in json format (as a string), so it can
+     * be parsed correctly.
+     *
+     * @param string|null $content
+     */
+    public function __construct($content = null)
+    {
+        if ($content !== null && is_string($content)) {
+            /** @var array $response */
+            $response = json_decode($content);
+            error_log($response);
+        }
+    }
 
     /**
      * @return string
@@ -164,5 +183,18 @@ class Response
     {
         $this->basketErrors[] = $basketError;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'result' => $this->result,
+            'method' => $this->method,
+            'basketId' => $this->basketId,
+            'basketErrors' => array_values($this->basketErrors)
+        ];
     }
 }

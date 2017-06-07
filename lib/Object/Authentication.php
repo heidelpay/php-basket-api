@@ -3,7 +3,7 @@
 namespace Heidelpay\PhpBasketApi\Object;
 
 use Exception;
-use JsonSerializable;
+use Heidelpay\PhpBasketApi\Exception\ParameterOverflowException;
 
 /**
  * Authentication object for heidelpay basket api
@@ -13,7 +13,7 @@ use JsonSerializable;
  * @author Jens Richter
  * @package heidelpay\php-basket-api\object
  */
-class Authentication implements JsonSerializable
+class Authentication extends AbstractObject
 {
     /**
      * @var int Max character count for the Sender ID
@@ -38,11 +38,11 @@ class Authentication implements JsonSerializable
     /**
      * Authentication constructor.
      *
-     * @param $login
-     * @param $password
-     * @param $senderId
+     * @param string $login
+     * @param string $password
+     * @param string $senderId
      */
-    public function __construct($login, $password, $senderId)
+    public function __construct($login = null, $password = null, $senderId = null)
     {
         $this->setLogin($login);
         $this->setPassword($password);
@@ -63,6 +63,14 @@ class Authentication implements JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
      * Sets the user password
      *
      * @param string $password
@@ -76,6 +84,14 @@ class Authentication implements JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
      * Sets the Sender ID.
      *
      * @param string
@@ -86,20 +102,18 @@ class Authentication implements JsonSerializable
     public function setSender($sender)
     {
         if (strlen($sender) > $this::MAX_SENDER_LENGTH) {
-            throw new Exception('Sender ID cannot be longer than ' . $this::MAX_SENDER_LENGTH . ' characters.');
+            throw new ParameterOverflowException(
+                'Sender ID cannot be longer than ' . $this::MAX_SENDER_LENGTH . ' characters.'
+            );
         }
 
         $this->sender = $sender;
         return $this;
     }
 
-    /**
-     * Returns the Json representation of the Authenfication object.
-     * @return string
-     */
-    public function toJson()
+    public function getSender()
     {
-        return json_encode($this->jsonSerialize());
+        return $this->sender;
     }
 
     /**

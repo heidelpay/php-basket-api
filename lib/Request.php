@@ -2,6 +2,10 @@
 
 namespace Heidelpay\PhpBasketApi;
 
+use Heidelpay\PhpBasketApi\Adapter\CurlAdapter;
+use Heidelpay\PhpBasketApi\Exception\EmptyAuthenticationException;
+use Heidelpay\PhpBasketApi\Exception\EmptyBasketException;
+use Heidelpay\PhpBasketApi\Object\AbstractObject;
 use Heidelpay\PhpBasketApi\Object\Authentication;
 use Heidelpay\PhpBasketApi\Object\Basket;
 
@@ -13,7 +17,7 @@ use Heidelpay\PhpBasketApi\Object\Basket;
  * @author Jens Richter
  * @package heidelpay\php-basket-api\interaction\object
  */
-class Request
+class Request extends AbstractObject
 {
     /**
      * @var string URL for the test system
@@ -36,12 +40,35 @@ class Request
     protected $basket = null;
 
     /**
+     * @var bool If the request is being sent to the test environment.
+     */
+    protected $isSandbox = true;
+
+    /**
+     * @var null
+     */
+    protected $adapter = null;
+
+    /**
+     * Request constructor.
+     */
+    public function __construct()
+    {
+        $this->adapter = new CurlAdapter();
+    }
+
+    /**
      * Sets the authentication object
+     *
+     * @param string $login
+     * @param string $password
+     * @param string $senderId
+     *
      * @return $this
      */
-    public function setAuthentication($login, $password, $senderId)
+    public function setAuthentication($login = null, $password = null, $senderId = null)
     {
-        $this->authentication = new Authentication();
+        $this->authentication = new Authentication($login, $password, $senderId);
 
         return $this;
     }
@@ -84,5 +111,59 @@ class Request
         }
 
         return $this->basket;
+    }
+
+    public function retrieveBasket($basketId)
+    {
+        $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
+        $url .= 'get/' . $basketId;
+
+        $result = $this->adapter->sendPost($url, $this);
+    }
+
+    public function submitBasket()
+    {
+        if ($this->authentication === null) {
+            throw new EmptyAuthenticationException();
+        }
+
+        if ($this->basket === null) {
+            throw new EmptyBasketException();
+        }
+
+        $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
+
+        $result = $this->adapter->sendPost($url, $this);
+    }
+
+    /**
+     * @throws EmptyAuthenticationException
+     * @throws EmptyBasketException
+     */
+    public function changeBasket()
+    {
+        if ($this->authentication === null) {
+            throw new EmptyAuthenticationException();
+        }
+
+        if ($this->basket === null) {
+            throw new EmptyBasketException();
+        }
+
+        $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
+        $url .= $this->basket->getBasketReferenceId();
+
+        $result = $this->adapter->sendPost($url, $this);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'authentication' => $this->authentication,
+            'basket' => $this->basket
+        ];
     }
 }
