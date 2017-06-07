@@ -51,10 +51,33 @@ class Request extends AbstractObject
 
     /**
      * Request constructor.
+     *
+     * @param Authentication|null $auth
+     * @param Basket|null $basket
      */
-    public function __construct()
+    public function __construct(Authentication $auth = null, Basket $basket = null)
     {
+        if ($auth !== null) {
+            $this->authentication = $auth;
+        }
+
+        if ($basket !== null) {
+            $this->basket = $basket;
+        }
+
         $this->adapter = new CurlAdapter();
+    }
+
+    /**
+     * @param bool $isSandbox either if sandbox mode is enabled or not
+     *
+     * @return $this
+     */
+    public function setIsSandboxMode($isSandbox)
+    {
+        $this->isSandbox = $isSandbox;
+
+        return $this;
     }
 
     /**
@@ -113,15 +136,34 @@ class Request extends AbstractObject
         return $this->basket;
     }
 
+    /**
+     * Retrieves a basket by the given unique basket id.
+     * The Response is returned, not the Basket itself.
+     *
+     * @param string $basketId
+     *
+     * @return Response
+     * @throws EmptyAuthenticationException
+     */
     public function retrieveBasket($basketId)
     {
+        if ($this->authentication === null) {
+            throw new EmptyAuthenticationException();
+        }
+
         $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
         $url .= 'get/' . $basketId;
 
-        $result = $this->adapter->sendPost($url, $this);
+        return new Response($this->adapter->sendPost($url, $this));
     }
 
-    public function submitBasket()
+    /**
+     * Submits a basket and returns a Response.
+     * @return Response
+     * @throws EmptyAuthenticationException
+     * @throws EmptyBasketException
+     */
+    public function addNewBasket()
     {
         if ($this->authentication === null) {
             throw new EmptyAuthenticationException();
@@ -133,14 +175,14 @@ class Request extends AbstractObject
 
         $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
 
-        $result = $this->adapter->sendPost($url, $this);
+        return new Response($this->adapter->sendPost($url, $this));
     }
 
     /**
      * @throws EmptyAuthenticationException
      * @throws EmptyBasketException
      */
-    public function changeBasket()
+    public function overwriteBasket()
     {
         if ($this->authentication === null) {
             throw new EmptyAuthenticationException();

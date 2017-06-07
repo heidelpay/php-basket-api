@@ -2,7 +2,7 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use Heidelpay\PhpBasketApi\Exception\InvalidBasketItemIdException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
 
 /**
  * heidelpay Basket
@@ -17,26 +17,20 @@ class Basket extends AbstractObject
 {
     /**
      * The total amount of the whole basket without Tax
-     * @var int total net amount
-     */
-    protected $amountTotal = null;
-
-    /**
-     * The total amount of the whole basket without Tax
      * @var int $amountTotalNet
      */
-    protected $amountTotalNet = null;
+    protected $amountTotalNet;
 
     /**
      * @var int $amountTotalVat
      */
-    protected $amountTotalVat = null;
+    protected $amountTotalVat;
 
     /**
      * The total discount amount of the whole basket
      * @var int $amountTotalDiscount
      */
-    protected $amountTotalDiscount = null;
+    protected $amountTotalDiscount;
 
     /**
      * Array of BasketItems
@@ -48,47 +42,60 @@ class Basket extends AbstractObject
      * A basket or shop reference id sent from the shop backend
      * @var string $basketReferenceId
      */
-    protected $basketReferenceId = null;
+    protected $basketReferenceId;
 
     /**
      * The currency code in ISO 4217 format
      * @var string $currencyCode
      */
-    protected $currencyCode = null;
+    protected $currencyCode;
 
     /**
      * A note sent from your application
      * @var string $note
      */
-    protected $note = null;
+    protected $note;
+
+    /**
+     * @var int
+     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     */
+    protected $voucherAmount;
+
+    /**
+     * @var string
+     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     */
+    protected $voucherId;
 
     /**
      * Attributes that are mandatory for the Basket
      * @var array
      */
     protected $mandatory = [
-        'amountTotal', 'currencyCode', 'basketItems'
+        'amountTotal',
+        'currencyCode',
+        'basketItems'
     ];
 
     /**
-     * Amount total getter
+     * Returns the total discount.
      * @return int
      */
-    public function getAmountTotal()
+    public function getAmountTotalDiscount()
     {
-        return $this->amountTotal;
+        return $this->amountTotalDiscount;
     }
 
     /**
-     * Amount total setter
-     *
-     * @param int $value
+     * @param int $amountTotalDiscount
      *
      * @return $this
      */
-    public function setAmountTotal($value)
+    public function setAmountTotalDiscount($amountTotalDiscount)
     {
-        $this->amountTotal = $value;
+        $this->amountTotalDiscount = $amountTotalDiscount;
+
         return $this;
     }
 
@@ -140,7 +147,7 @@ class Basket extends AbstractObject
      * return all basket items
      * @return array basketItems
      */
-    public function getAllBasketItems()
+    public function getBasketItems()
     {
         return $this->basketItems;
     }
@@ -150,7 +157,7 @@ class Basket extends AbstractObject
      *
      * @param int $itemId
      *
-     * @throws \Exception
+     * @throws InvalidBasketitemIdException
      * @return BasketItem
      */
     public function getBasketItemById($itemId)
@@ -159,7 +166,7 @@ class Basket extends AbstractObject
             return $this->basketItems[$itemId];
         }
 
-        throw new InvalidBasketItemIdException("Basket item with id " . $itemId . " does not exist.");
+        throw new InvalidBasketitemIdException("Basket item with id " . $itemId . " does not exist.");
     }
 
     /**
@@ -181,7 +188,7 @@ class Basket extends AbstractObject
      * @param int $itemId the item index
      * @param BasketItem $item the item to be set
      *
-     * @throws \Exception
+     * @throws InvalidBasketitemIdException
      * @return $this
      */
     public function updateBasketItemById($itemId, BasketItem $item)
@@ -191,7 +198,7 @@ class Basket extends AbstractObject
             return $this;
         }
 
-        throw new InvalidBasketItemIdException('Basket item with id ' . $itemId . ' does not exist.');
+        throw new InvalidBasketitemIdException('Basket item with id ' . $itemId . ' does not exist.');
     }
 
     /**
@@ -199,7 +206,7 @@ class Basket extends AbstractObject
      *
      * @param int $itemId the basket index of the item
      *
-     * @throws \Exception
+     * @throws InvalidBasketitemIdException
      * @return $this
      */
     public function deleteBasketItemById($itemId)
@@ -209,7 +216,7 @@ class Basket extends AbstractObject
             return $this;
         }
 
-        throw new InvalidBasketItemIdException('Basket item with id ' . $itemId . ' does not exist.');
+        throw new InvalidBasketitemIdException('Basket item with id ' . $itemId . ' does not exist.');
     }
 
     /**
@@ -288,10 +295,49 @@ class Basket extends AbstractObject
     }
 
     /**
+     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * @return int
+     */
+    public function getVoucherAmount()
+    {
+        return $this->voucherAmount;
+    }
+
+    /**
+     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
+     * @param int $voucherAmount
+     */
+    public function setVoucherAmount($voucherAmount)
+    {
+        $this->voucherAmount = $voucherAmount;
+    }
+
+    /**
+     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * @return string
+     */
+    public function getVoucherId()
+    {
+        return $this->voucherId;
+    }
+
+    /**
+     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
+     * @param string $voucherId
+     */
+    public function setVoucherId($voucherId)
+    {
+        $this->voucherId = $voucherId;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()
     {
+        // TODO: add voucherAmount and voucherId, if documented and ready to release.
         return [
             'amountTotalNet' => $this->amountTotalNet,
             'amountTotalVat' => $this->amountTotalVat,
@@ -302,5 +348,18 @@ class Basket extends AbstractObject
             'note' => $this->note,
             'basketItems' => array_values($this->basketItems)
         ];
+    }
+
+    /**
+     * Magic setter in favor of parsing.
+     *
+     * @param $field
+     * @param $value
+     */
+    public function __set($field, $value)
+    {
+        if (property_exists($this, $field)) {
+            $this->$field = $value;
+        }
     }
 }

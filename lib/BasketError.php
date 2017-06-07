@@ -76,4 +76,9 @@ class BasketError extends AbstractObject
             'message' => $this->message
         ];
     }
+
+    public function printMessage()
+    {
+        return sprintf('[Errorcode %s, Message: %s]', $this->code, $this->message);
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
-use Heidelpay\PhpBasketApi\Exception\InvalidBasketItemIdException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
 use Heidelpay\PhpBasketApi\Object\Basket;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
  * @link https://dev.heidelpay.de/php-basket-api
  * @author Jens Richter
- * @package heidelpay\php-basket-api\unit-test
+ * @package heidelpay\php-basket-api\tests\unit
  */
 class BasketTest extends TestCase
 {
@@ -26,17 +26,6 @@ class BasketTest extends TestCase
     public function setUp()
     {
         $this->basket = new Basket();
-    }
-
-    /**
-     * getter and setter test for amountTotal
-     */
-    public function testAmountTotal()
-    {
-        $value = 2021;
-
-        $this->basket->setAmountTotal($value);
-        $this->assertEquals($value, $this->basket->getAmountTotal());
     }
 
     /**
@@ -70,7 +59,7 @@ class BasketTest extends TestCase
         $this->basket->addBasketItem($item);
 
         /* test for single item object */
-        $result = (array_key_exists(0, $this->basket->getAllBasketItems())) ? true : false;
+        $result = (array_key_exists(0, $this->basket->getBasketItems())) ? true : false;
         $this->assertTrue($result, 'Object does not contain an item');
 
         /* Test for multible item objects */
@@ -82,13 +71,13 @@ class BasketTest extends TestCase
 
         /* test delete item object form basket  */
         $this->basket->deleteBasketItemById(1);
-        $result = (array_key_exists(0, $this->basket->getAllBasketItems())) ? true : false;
+        $result = (array_key_exists(0, $this->basket->getBasketItems())) ? true : false;
         $this->assertTrue($result, 'More then one item has been deleted');
 
-        $result = (array_key_exists(1, $this->basket->getAllBasketItems())) ? true : false;
+        $result = (array_key_exists(1, $this->basket->getBasketItems())) ? true : false;
         $this->assertFalse($result, 'Item object has not been removed from basket');
 
-        $this->expectException(InvalidBasketItemIdException::class);
+        $this->expectException(InvalidBasketitemIdException::class);
         $this->basket->getBasketItemById(1);
     }
 

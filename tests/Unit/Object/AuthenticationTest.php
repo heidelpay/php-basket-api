@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
  * @link  https://dev.heidelpay.de/php-basket-api
  * @author Jens Richter
- * @package heidelpay\php-basket-api\unit-test
+ * @package heidelpay\php-basket-api\tests\unit
  */
 class AuthenticationTest extends TestCase
 {

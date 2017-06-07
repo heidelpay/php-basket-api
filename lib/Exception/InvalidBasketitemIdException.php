@@ -12,7 +12,7 @@ use Exception;
  * @author Stephano Vogel
  * @package heidelpay\php-basket-api\exception
  */
-class InvalidBasketItemIdException extends Exception
+class InvalidBasketitemIdException extends Exception
 {
 
 }
