@@ -58,13 +58,13 @@ class RequestTest extends TestCase
         $this->basket->setAmountTotalVat(1557);
         $this->basket->setAmountTotalDiscount(0);
         $this->basket->setCurrencyCode('EUR');
-        $this->basket->setBasketReferenceId('heidelpay-php-basket-api-integration-test-' . date('Y-m-d-H-i-s'));
+        $this->basket->setBasketReferenceId('heidelpay-php-basket-api-integration-test');
         $this->basket->setNote('heidelpay php-basket-api test basket');
 
         // set up a first basket item
         $basketItemOne = new BasketItem();
-        $basketItemOne->setPosition(1);
-        $basketItemOne->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-' . date('Y-m-d-H-i-s') . '-1');
+        //$basketItemOne->setPosition(1);
+        $basketItemOne->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-1');
         $basketItemOne->setUnit('Stk.');
         $basketItemOne->setArticleId('heidelpay-testitem-1');
         $basketItemOne->setTitle('Heidelpay Test Article #1');
@@ -81,8 +81,8 @@ class RequestTest extends TestCase
 
         // set up a second basket item
         $basketItemTwo = new BasketItem();
-        $basketItemTwo->setPosition(2);
-        $basketItemTwo->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-' . date('Y-m-d-H-i-s') . '-2');
+        //$basketItemTwo->setPosition(2);
+        $basketItemTwo->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-2');
         $basketItemTwo->setUnit('Stk.');
         $basketItemTwo->setArticleId('heidelpay-testitem-2');
         $basketItemTwo->setTitle('Heidelpay Test Article #2');
@@ -99,14 +99,13 @@ class RequestTest extends TestCase
 
         // set up a third basket item (shipping)
         $basketItemThree = new BasketItem();
-        $basketItemThree->setPosition(3);
-        $basketItemThree->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-' . date('Y-m-d-H-i-s') . '-3');
+        //$basketItemThree->setPosition(3);
+        $basketItemThree->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-3');
         $basketItemThree->setUnit('Stk.');
         $basketItemThree->setArticleId('heidelpay-testitem-3');
         $basketItemThree->setTitle('Heidelpay Test Article #3');
         $basketItemThree->setDescription('Just for testing.');
         $basketItemThree->setType('goods');
-        $basketItemThree->setImageUrl('https://placehold.it/236566083.jpg');
         $basketItemThree->setQuantity(1);
         $basketItemThree->setVat(19);
         $basketItemThree->setAmountPerUnit(750);
@@ -147,8 +146,18 @@ class RequestTest extends TestCase
         $request = new Request($this->auth);
         $response = $request->retrieveBasket($basketId);
 
+        // test, if Response matches expected values
         $this->assertEquals(Response::RESULT_ACK, $response->getResult());
         $this->assertEquals('getBasket', $response->getMethod());
         $this->assertEquals($basketId, $response->getBasketId());
+
+        // test, if the basket contents are the same as requested first.
+        $this->assertEquals($this->basket->getBasketReferenceId(), $response->getBasket()->getBasketReferenceId());
+        $this->assertEquals($this->basket->getAmountTotalNet(), $response->getBasket()->getAmountTotalNet());
+        $this->assertEquals($this->basket->getAmountTotalVat(), $response->getBasket()->getAmountTotalVat());
+        $this->assertEquals($this->basket->getItemCount(), $response->getBasket()->getItemCount());
+        $this->assertEquals($this->basket->getBasketItems(), $response->getBasket()->getBasketItems());
+
+        // TODO: More tests.
     }
 }

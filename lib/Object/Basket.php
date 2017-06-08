@@ -145,7 +145,7 @@ class Basket extends AbstractObject
 
     /**
      * return all basket items
-     * @return array basketItems
+     * @return BasketItem[]
      */
     public function getBasketItems()
     {
@@ -155,68 +155,92 @@ class Basket extends AbstractObject
     /**
      * return the basket item with the given id
      *
-     * @param int $itemId
+     * @param int $position
      *
      * @throws InvalidBasketitemIdException
-     * @return BasketItem
+     * @return BasketItem|null
      */
-    public function getBasketItemById($itemId)
+    public function getBasketItemByPosition($position)
     {
-        if (array_key_exists($itemId, $this->basketItems)) {
-            return $this->basketItems[$itemId];
+        if ($position <= 0) {
+            throw new InvalidBasketitemIdException('BasketItem position cannot be equal or less than 0.');
         }
 
-        throw new InvalidBasketitemIdException("Basket item with id " . $itemId . " does not exist.");
+        if (array_key_exists($position - 1, $this->basketItems)) {
+            return $this->basketItems[$position - 1];
+        }
+
+        return null;
     }
 
     /**
      * Add item to basket object
      *
-     * @param BasketItem $item
+     * @param BasketItem $item The BasketItem to be added
+     * @param int|null $position The position where the item should be placed (optional)
      *
+     * @throws InvalidBasketitemIdException
      * @return $this
      */
-    public function addBasketItem(BasketItem $item)
+    public function addBasketItem(BasketItem $item, $position = null)
     {
-        $this->basketItems[] = $item;
+        $realPosition = $this->getBasketItemPosition($item, $position);
+
+        if ($realPosition === null) {
+            $item->setPosition($this->getItemCount() + 1);
+            $this->basketItems[] = $item;
+            return $this;
+        }
+
+        $this->basketItems[$realPosition] = $item;
         return $this;
     }
 
     /**
      * Updates the object at the given index.
      *
-     * @param int $itemId the item index
      * @param BasketItem $item the item to be set
+     * @param int $position The position of the BasketItem
      *
      * @throws InvalidBasketitemIdException
      * @return $this
      */
-    public function updateBasketItemById($itemId, BasketItem $item)
+    public function updateBasketItem(BasketItem $item, $position)
     {
-        if (array_key_exists($itemId, $this->basketItems)) {
-            $this->basketItems[$itemId] = $item;
+        $realPosition = $this->getBasketItemPosition($item, $position);
+
+        if ($realPosition === null) {
+            throw new InvalidBasketitemIdException('Invalid BasketItem position: ' . $position);
+        }
+
+        if (array_key_exists($realPosition, $this->basketItems)) {
+            $this->basketItems[$realPosition] = $item;
             return $this;
         }
 
-        throw new InvalidBasketitemIdException('Basket item with id ' . $itemId . ' does not exist.');
+        throw new InvalidBasketitemIdException('Basket item with id ' . $position . ' does not exist.');
     }
 
     /**
      * Removes an item of the basket at the given position.
      *
-     * @param int $itemId the basket index of the item
+     * @param int $position the basket index of the item
      *
      * @throws InvalidBasketitemIdException
      * @return $this
      */
-    public function deleteBasketItemById($itemId)
+    public function deleteBasketItemByPosition($position)
     {
-        if (array_key_exists($itemId, $this->basketItems)) {
-            unset($this->basketItems[$itemId]);
+        if ($position <= 0) {
+            throw new InvalidBasketitemIdException('BasketItem position cannot be equal or less than 0.');
+        }
+
+        if (array_key_exists($position - 1, $this->basketItems)) {
+            unset($this->basketItems[$position - 1]);
             return $this;
         }
 
-        throw new InvalidBasketitemIdException('Basket item with id ' . $itemId . ' does not exist.');
+        throw new InvalidBasketitemIdException('Basket item with id ' . $position . ' does not exist.');
     }
 
     /**
@@ -348,6 +372,36 @@ class Basket extends AbstractObject
             'note' => $this->note,
             'basketItems' => array_values($this->basketItems)
         ];
+    }
+
+    /**
+     * Determines the position of the BasketItem in the Basket
+     *
+     * @param BasketItem $item
+     * @param int|null $position
+     *
+     * @return int|null
+     */
+    private function getBasketItemPosition(BasketItem $item, $position = null)
+    {
+        $result = null;
+
+        // in case the item position is not null and > 0
+        if (is_numeric($item->getPosition()) && $item->getPosition() > 0) {
+            $result = $item->getPosition();
+        }
+
+        // in case the position is not null and > 0
+        if (is_numeric($position) && $position > 0) {
+            $result = $position - 1;
+        }
+
+        // if an item already exists on the determined position, just increase the result number...
+        if ($result !== null && isset($this->basketItems[$result])) {
+            $result+= 1;
+        }
+
+        return $result;
     }
 
     /**

@@ -255,7 +255,7 @@ class Response extends AbstractObject
                         $item->$class_var = $value;
                     }
 
-                    $basket->addBasketItem($item);
+                    $basket->addBasketItem($item, $basketItem->position);
                 }
             }
 

@@ -32,15 +32,15 @@ class BasketItemTest extends TestCase
     public function testPosition()
     {
         $position3 = 3;
-        $position0 = 0;
+        $position1 = 1;
 
         $this->assertNull($this->basketItem->getPosition());
 
         $this->basketItem->setPosition($position3);
         $this->assertEquals($position3, $this->basketItem->getPosition());
 
-        $this->basketItem->setPosition($position0);
-        $this->assertEquals($position0, $this->basketItem->getPosition());
+        $this->basketItem->setPosition($position1);
+        $this->assertEquals($position1, $this->basketItem->getPosition());
     }
 
     /**
@@ -50,10 +50,10 @@ class BasketItemTest extends TestCase
     {
         $referenceId = '136d24be-12b0-7d076a9e';
 
-        $this->assertNull($this->basketItem->getBasketitemReferenceId());
+        $this->assertNull($this->basketItem->getBasketItemReferenceId());
 
         $this->basketItem->setBasketItemReferenceId($referenceId);
-        $this->assertEquals($referenceId, $this->basketItem->getBasketitemReferenceId());
+        $this->assertEquals($referenceId, $this->basketItem->getBasketItemReferenceId());
     }
 
     /**

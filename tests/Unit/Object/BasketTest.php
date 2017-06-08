@@ -58,6 +58,8 @@ class BasketTest extends TestCase
         $this->basket->addBasketItem($item);
         $this->basket->addBasketItem($item);
 
+        $this->assertEquals(3, $this->basket->getItemCount());
+
         /* test for single item object */
         $result = (array_key_exists(0, $this->basket->getBasketItems())) ? true : false;
         $this->assertTrue($result, 'Object does not contain an item');
@@ -66,19 +68,21 @@ class BasketTest extends TestCase
 
         /* test update item object by id */
         $title = 'fish and chips';
-        $this->basket->updateBasketItemById(1, $item->setTitle($title));
-        $this->assertEquals($title, $this->basket->getBasketItemById(1)->getTitle());
+        $this->basket->updateBasketItem($item->setTitle($title), 1);
+        $this->assertEquals($title, $this->basket->getBasketItemByPosition(1)->getTitle());
+        $this->assertEquals($title, $this->basket->getBasketItems()[0]->getTitle());
 
         /* test delete item object form basket  */
-        $this->basket->deleteBasketItemById(1);
-        $result = (array_key_exists(0, $this->basket->getBasketItems())) ? true : false;
+        $this->basket->deleteBasketItemByPosition(1);
+        $result = $this->basket->getBasketItemByPosition(2) ? true : false;
         $this->assertTrue($result, 'More then one item has been deleted');
 
-        $result = (array_key_exists(1, $this->basket->getBasketItems())) ? true : false;
+        $result = $this->basket->getBasketItemByPosition(1) ? true : false;
         $this->assertFalse($result, 'Item object has not been removed from basket');
+        $this->assertNull($this->basket->getBasketItemByPosition(1));
 
         $this->expectException(InvalidBasketitemIdException::class);
-        $this->basket->getBasketItemById(1);
+        $this->basket->getBasketItemByPosition(0);
     }
 
     /**
@@ -118,7 +122,7 @@ class BasketTest extends TestCase
         $this->assertEquals(2, $this->basket->getItemCount());
 
         /* delect one item from object */
-        $this->basket->deleteBasketItemById(1);
+        $this->basket->deleteBasketItemByPosition(1);
         $this->assertEquals(1, $this->basket->getItemCount());
     }
 

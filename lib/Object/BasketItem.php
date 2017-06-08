@@ -2,6 +2,8 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
+
 /**
  *  Item object for heidelpay api
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
@@ -20,9 +22,9 @@ class BasketItem extends AbstractObject
 
     /**
      * The unique basketitem reference id (mandatory)
-     * @var string $basketitemReferenceId
+     * @var string $basketItemReferenceId
      */
-    protected $basketitemReferenceId;
+    protected $basketItemReferenceId;
 
     /**
      * The unit description of the item e.g. "Stk." (optional)
@@ -242,7 +244,7 @@ class BasketItem extends AbstractObject
      */
     public function setBasketItemReferenceId($value)
     {
-        $this->basketitemReferenceId = $value;
+        $this->basketItemReferenceId = $value;
         return $this;
     }
 
@@ -277,13 +279,18 @@ class BasketItem extends AbstractObject
     /**
      * Position setter
      *
-     * @param int $value
+     * @param int $position
      *
+     * @throws InvalidBasketitemIdException
      * @return $this
      */
-    public function setPosition($value)
+    public function setPosition($position)
     {
-        $this->position = $value;
+        if ($position <= 0) {
+            throw new InvalidBasketitemIdException('BasketItem position cannot be equal or less than 0.');
+        }
+
+        $this->position = $position;
         return $this;
     }
 
@@ -363,9 +370,9 @@ class BasketItem extends AbstractObject
     /**
      * @return string
      */
-    public function getBasketitemReferenceId()
+    public function getBasketItemReferenceId()
     {
-        return $this->basketitemReferenceId;
+        return $this->basketItemReferenceId;
     }
 
     /**
@@ -483,6 +490,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param string $channel
      */
     public function setChannel($channel)
@@ -501,6 +509,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param string $transactionId
      */
     public function setTransactionId($transactionId)
@@ -519,6 +528,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param string $usage
      */
     public function setUsage($usage)
@@ -537,6 +547,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param int $commissionRate
      */
     public function setCommissionRate($commissionRate)
@@ -555,6 +566,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param int $voucherAmount
      */
     public function setVoucherAmount($voucherAmount)
@@ -573,6 +585,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param string $voucherId
      */
     public function setVoucherId($voucherId)
@@ -591,6 +604,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @param string $articleCategory
      */
     public function setArticleCategory($articleCategory)
@@ -607,7 +621,7 @@ class BasketItem extends AbstractObject
         // TODO: if documented and ready to release.
         return [
             'position' => $this->position,
-            'basketItemReferenceId' => $this->basketitemReferenceId,
+            'basketItemReferenceId' => $this->basketItemReferenceId,
             'articleId' => $this->articleId,
             'title' => $this->title,
             'description' => $this->description,

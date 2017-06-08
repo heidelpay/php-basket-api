@@ -151,10 +151,7 @@ class Request extends AbstractObject
             throw new EmptyAuthenticationException();
         }
 
-        $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
-        $url .= 'get/' . $basketId;
-
-        return new Response($this->adapter->sendPost($url, $this));
+        return new Response($this->adapter->sendPost($this->generateUrl('get/' . $basketId), $this));
     }
 
     /**
@@ -173,12 +170,13 @@ class Request extends AbstractObject
             throw new EmptyBasketException();
         }
 
-        $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
-
-        return new Response($this->adapter->sendPost($url, $this));
+        return new Response($this->adapter->sendPost($this->generateUrl(), $this));
     }
 
     /**
+     * Submits the current Basket to overwrite/change the existing with the same id,
+     * e.g. if the user added a voucher or shipping fees have changed.
+     * @return Response
      * @throws EmptyAuthenticationException
      * @throws EmptyBasketException
      */
@@ -192,10 +190,33 @@ class Request extends AbstractObject
             throw new EmptyBasketException();
         }
 
-        $url = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
-        $url .= $this->basket->getBasketReferenceId();
+        return new Response(
+            $this->adapter->sendPost($this->generateUrl($this->basket->getBasketReferenceId()), $this)
+        );
+    }
 
-        $result = $this->adapter->sendPost($url, $this);
+    /**
+     * Generates a url for the request.
+     *
+     * @param string|null $suffix The url suffix
+     *
+     * @return string
+     */
+    private function generateUrl($suffix = null)
+    {
+        $base = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
+
+        // add a trailing slash to the base url, if not present
+        if (substr($base, -1, 1) !== '/') {
+            $base .= '/';
+        }
+
+        // remove a leading slash of the suffix, if present
+        if ($suffix !== null && substr($suffix, 0, 1) === '/') {
+            $suffix = substr($suffix, 1, strlen($suffix) - 1);
+        }
+
+        return sprintf('%s%s', $base, $suffix);
     }
 
     /**
