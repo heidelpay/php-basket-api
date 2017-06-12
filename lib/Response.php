@@ -2,6 +2,7 @@
 
 namespace Heidelpay\PhpBasketApi;
 
+use Heidelpay\PhpBasketApi\Exception\BasketException;
 use Heidelpay\PhpBasketApi\Object\AbstractObject;
 use Heidelpay\PhpBasketApi\Object\Basket;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
@@ -255,11 +256,15 @@ class Response extends AbstractObject
                         $item->$class_var = $value;
                     }
 
-                    $basket->addBasketItem($item, $basketItem->position);
+                    $basket->addBasketItem($item);
                 }
             }
 
             $this->setBasket($basket);
+
+            if (isset($obj->basket->itemCount) && $this->basket->getItemCount() != $obj->basket->itemCount) {
+                throw new BasketException();
+            }
         }
 
         // iterate through all basket errors, create object instances

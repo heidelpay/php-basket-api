@@ -36,7 +36,7 @@ class CurlAdapter
         $curlRequest = curl_init();
         curl_setopt($curlRequest, CURLOPT_URL, $uri);
         curl_setopt($curlRequest, CURLOPT_HEADER, 0);
-        //curl_setopt($curlRequest, CURLOPT_FAILONERROR, true);
+        curl_setopt($curlRequest, CURLOPT_FAILONERROR, true);
         curl_setopt($curlRequest, CURLOPT_TIMEOUT, 60);
         curl_setopt($curlRequest, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($curlRequest, CURLOPT_POST, true);

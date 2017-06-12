@@ -193,6 +193,8 @@ class Basket extends AbstractObject
         }
 
         $this->basketItems[$realPosition] = $item;
+        sort($this->basketItems);
+
         return $this;
     }
 

@@ -63,7 +63,7 @@ class RequestTest extends TestCase
 
         // set up a first basket item
         $basketItemOne = new BasketItem();
-        //$basketItemOne->setPosition(1);
+        $basketItemOne->setPosition(1);
         $basketItemOne->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-1');
         $basketItemOne->setUnit('Stk.');
         $basketItemOne->setArticleId('heidelpay-testitem-1');
@@ -81,7 +81,7 @@ class RequestTest extends TestCase
 
         // set up a second basket item
         $basketItemTwo = new BasketItem();
-        //$basketItemTwo->setPosition(2);
+        $basketItemTwo->setPosition(2);
         $basketItemTwo->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-2');
         $basketItemTwo->setUnit('Stk.');
         $basketItemTwo->setArticleId('heidelpay-testitem-2');
@@ -99,7 +99,7 @@ class RequestTest extends TestCase
 
         // set up a third basket item (shipping)
         $basketItemThree = new BasketItem();
-        //$basketItemThree->setPosition(3);
+        $basketItemThree->setPosition(3);
         $basketItemThree->setBasketItemReferenceId('heidelpay-php-basket-api-testitem-3');
         $basketItemThree->setUnit('Stk.');
         $basketItemThree->setArticleId('heidelpay-testitem-3');
@@ -155,8 +155,23 @@ class RequestTest extends TestCase
         $this->assertEquals($this->basket->getBasketReferenceId(), $response->getBasket()->getBasketReferenceId());
         $this->assertEquals($this->basket->getAmountTotalNet(), $response->getBasket()->getAmountTotalNet());
         $this->assertEquals($this->basket->getAmountTotalVat(), $response->getBasket()->getAmountTotalVat());
+        $this->assertEquals($this->basket->getAmountTotalDiscount(), $response->getBasket()->getAmountTotalDiscount());
+        $this->assertEquals($this->basket->getCurrencyCode(), $response->getBasket()->getCurrencyCode());
+        $this->assertEquals($this->basket->getNote(), $response->getBasket()->getNote());
         $this->assertEquals($this->basket->getItemCount(), $response->getBasket()->getItemCount());
         $this->assertEquals($this->basket->getBasketItems(), $response->getBasket()->getBasketItems());
+        $this->assertEquals(
+            $this->basket->getBasketItemByPosition(1),
+            $response->getBasket()->getBasketItemByPosition(1)
+        );
+        $this->assertEquals(
+            $this->basket->getBasketItemByPosition(2),
+            $response->getBasket()->getBasketItemByPosition(2)
+        );
+        $this->assertEquals(
+            $this->basket->getBasketItemByPosition(3),
+            $response->getBasket()->getBasketItemByPosition(3)
+        );
 
         // TODO: More tests.
     }
