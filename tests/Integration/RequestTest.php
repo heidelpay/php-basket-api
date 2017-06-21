@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Integration Testsuite for all requests to the API
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
  * @link https://dev.heidelpay.de/php-basket-api
@@ -119,6 +120,9 @@ class RequestTest extends TestCase
         $this->basket->addBasketItem($basketItemThree);
     }
 
+    /**
+     * @return string
+     */
     public function testAddNewBasket()
     {
         $request = new Request($this->auth, $this->basket);
@@ -137,9 +141,12 @@ class RequestTest extends TestCase
 
     /**
      * Tests if the basket that was just submitted can be retrieved by it's id.
+     *
      * @depends testAddNewBasket
      *
      * @param string $basketId
+     *
+     * @return Response
      */
     public function testRetrieveBasket($basketId)
     {
@@ -173,6 +180,68 @@ class RequestTest extends TestCase
             $response->getBasket()->getBasketItemByPosition(3)
         );
 
-        // TODO: More tests.
+        // return for the overwriteBasket test.
+        return $response;
+    }
+
+    /**
+     * @depends testRetrieveBasket
+     *
+     * @param Response $apiResponse
+     *
+     * @return string
+     */
+    public function testOverwriteBasket(Response $apiResponse)
+    {
+        $request = new Request($this->auth);
+        $request->setBasket($apiResponse->getBasket());
+
+        // we change the amounts (gross, net, vat) of BasketItem #3 to emulate changed shipping fees
+        $request->getBasket()->getBasketItemByPosition(3)->setAmountGross(1000);
+        $request->getBasket()->getBasketItemByPosition(3)->setAmountNet(800);
+        $request->getBasket()->getBasketItemByPosition(3)->setAmountVat(200);
+
+        // do the overwrite request.
+        $response = $request->overwriteBasket($apiResponse->getBasketId());
+
+        // confirm the request was successful.
+        $this->assertTrue($response->isSuccess());
+        $this->assertEquals('ACK', $response->getResult());
+        $this->assertEquals('overwriteBasket', $response->getMethod());
+
+        // confirm that no basket was returned and the basket id is still the same.
+        $this->assertEquals($apiResponse->getBasketId(), $response->getBasketId());
+        $this->assertNull($response->getBasket());
+
+        return $response->getBasketId();
+    }
+
+    /**
+     * @depends testOverwriteBasket
+     *
+     * @param string $basketId
+     */
+    public function testOverwrittenBasketComparison($basketId)
+    {
+        $request = new Request($this->auth);
+        $response = $request->retrieveBasket($basketId);
+
+        // compare the original basket with the overwritten one (which we just loaded again via api call)
+        $this->assertNotEquals(
+            $this->basket->getBasketItemByPosition(3)->getAmountGross(),
+            $response->getBasket()->getBasketItemByPosition(3)->getAmountGross()
+        );
+        $this->assertNotEquals(
+            $this->basket->getBasketItemByPosition(3)->getAmountNet(),
+            $response->getBasket()->getBasketItemByPosition(3)->getAmountNet()
+        );
+        $this->assertNotEquals(
+            $this->basket->getBasketItemByPosition(3)->getAmountVat(),
+            $response->getBasket()->getBasketItemByPosition(3)->getAmountVat()
+        );
+        $this->assertEquals(
+            $this->basket->getBasketItemByPosition(3)->getArticleId(),
+            $response->getBasket()->getBasketItemByPosition(3)->getArticleId()
+        );
     }
 }

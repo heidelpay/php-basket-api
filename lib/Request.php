@@ -11,6 +11,7 @@ use Heidelpay\PhpBasketApi\Object\Basket;
 
 /**
  * heidelpay Basket API Request
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
  * @link https://dev.heidelpay.de/php-basket-api
@@ -53,10 +54,12 @@ class Request extends AbstractObject
      * Request constructor.
      *
      * @param Authentication|null $auth
-     * @param Basket|null $basket
+     * @param Basket|null         $basket
      */
-    public function __construct(Authentication $auth = null, Basket $basket = null)
-    {
+    public function __construct(
+        Authentication $auth = null,
+        Basket $basket = null
+    ) {
         if ($auth !== null) {
             $this->authentication = $auth;
         }
@@ -89,8 +92,11 @@ class Request extends AbstractObject
      *
      * @return $this
      */
-    public function setAuthentication($login = null, $password = null, $senderId = null)
-    {
+    public function setAuthentication(
+        $login = null,
+        $password = null,
+        $senderId = null
+    ) {
         $this->authentication = new Authentication($login, $password, $senderId);
 
         return $this;
@@ -98,6 +104,7 @@ class Request extends AbstractObject
 
     /**
      * Returns the Authentication object.
+     *
      * @return Authentication
      */
     public function getAuthentication()
@@ -125,6 +132,7 @@ class Request extends AbstractObject
 
     /**
      * Returns the Basket from the Request.
+     *
      * @return Basket
      */
     public function getBasket()
@@ -156,6 +164,7 @@ class Request extends AbstractObject
 
     /**
      * Submits a basket and returns a Response.
+     *
      * @return Response
      * @throws EmptyAuthenticationException
      * @throws EmptyBasketException
@@ -173,14 +182,18 @@ class Request extends AbstractObject
         return new Response($this->adapter->sendPost($this->generateUrl(), $this));
     }
 
+
     /**
-     * Submits the current Basket to overwrite/change the existing with the same id,
+     * Submits the current Basket to overwrite/change the basket with the given $basketId,
      * e.g. if the user added a voucher or shipping fees have changed.
+     *
+     * @param string $basketId
+     *
      * @return Response
      * @throws EmptyAuthenticationException
      * @throws EmptyBasketException
      */
-    public function overwriteBasket()
+    public function overwriteBasket($basketId)
     {
         if ($this->authentication === null) {
             throw new EmptyAuthenticationException();
@@ -191,7 +204,7 @@ class Request extends AbstractObject
         }
 
         return new Response(
-            $this->adapter->sendPost($this->generateUrl($this->basket->getBasketReferenceId()), $this)
+            $this->adapter->sendPost($this->generateUrl($basketId), $this)
         );
     }
 
