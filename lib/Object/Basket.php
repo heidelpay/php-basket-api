@@ -7,16 +7,21 @@ use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
 /**
  * heidelpay Basket
  * Implementation of the Basket API object
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Jens Richter
+ *
  * @package heidelpay\php-basket-api\object
  */
 class Basket extends AbstractObject
 {
     /**
      * The total amount of the whole basket without Tax
+     *
      * @var int $amountTotalNet
      */
     protected $amountTotalNet;
@@ -28,30 +33,35 @@ class Basket extends AbstractObject
 
     /**
      * The total discount amount of the whole basket
+     *
      * @var int $amountTotalDiscount
      */
     protected $amountTotalDiscount;
 
     /**
      * Array of BasketItems
+     *
      * @var BasketItem[]
      */
     protected $basketItems = [];
 
     /**
      * A basket or shop reference id sent from the shop backend
+     *
      * @var string $basketReferenceId
      */
     protected $basketReferenceId;
 
     /**
      * The currency code in ISO 4217 format
+     *
      * @var string $currencyCode
      */
     protected $currencyCode;
 
     /**
      * A note sent from your application
+     *
      * @var string $note
      */
     protected $note;
@@ -70,6 +80,7 @@ class Basket extends AbstractObject
 
     /**
      * Attributes that are mandatory for the Basket
+     *
      * @var array
      */
     protected $mandatory = [
@@ -80,6 +91,7 @@ class Basket extends AbstractObject
 
     /**
      * Returns the total discount.
+     *
      * @return int
      */
     public function getAmountTotalDiscount()
@@ -101,6 +113,7 @@ class Basket extends AbstractObject
 
     /**
      * Amount total net getter
+     *
      * @return int
      */
     public function getAmountTotalNet()
@@ -123,6 +136,7 @@ class Basket extends AbstractObject
 
     /**
      * Amount total vat getter
+     *
      * @return int
      */
     public function getAmountTotalVat()
@@ -144,7 +158,8 @@ class Basket extends AbstractObject
     }
 
     /**
-     * return all basket items
+     * Returns all BasketItems
+     *
      * @return BasketItem[]
      */
     public function getBasketItems()
@@ -153,7 +168,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * return the basket item with the given id
+     * Returns the basket item with the given position
      *
      * @param int $position
      *
@@ -174,10 +189,28 @@ class Basket extends AbstractObject
     }
 
     /**
+     * Returns a BasketItem by it's reference id.
+     *
+     * @param string $referenceId
+     *
+     * @return BasketItem|null
+     */
+    public function getBasketItemByReferenceId($referenceId)
+    {
+        foreach ($this->getBasketItems() as $basketItem) {
+            if ($basketItem->getReferenceId() === $referenceId) {
+                return $basketItem;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Add item to basket object
      *
      * @param BasketItem $item The BasketItem to be added
-     * @param int|null $position The position where the item should be placed (optional)
+     * @param int|null   $position The position where the item should be placed (optional)
      *
      * @throws InvalidBasketitemIdException
      * @return $this
@@ -202,12 +235,12 @@ class Basket extends AbstractObject
      * Updates the object at the given index.
      *
      * @param BasketItem $item the item to be set
-     * @param int $position The position of the BasketItem
+     * @param int        $position The position of the BasketItem
      *
      * @throws InvalidBasketitemIdException
      * @return $this
      */
-    public function updateBasketItem(BasketItem $item, $position)
+    public function updateBasketItem(BasketItem $item, $position = 0)
     {
         $realPosition = $this->getBasketItemPosition($item, $position);
 
@@ -246,7 +279,29 @@ class Basket extends AbstractObject
     }
 
     /**
+     * Deletes a BasketItem by it's reference id.
+     *
+     * @param string $referenceId
+     *
+     * @return $this
+     *
+     * @throws InvalidBasketitemIdException
+     */
+    public function deleteBasketItemByReferenceId($referenceId)
+    {
+        foreach ($this->getBasketItems() as $basketItem) {
+            if ($basketItem->getReferenceId() === $referenceId) {
+                unset($this->basketItems[$basketItem->getPosition() - 1]);
+                return $this;
+            }
+        }
+
+        throw new InvalidBasketitemIdException('Basket item with refereceId ' . $referenceId . ' does not exist.');
+    }
+
+    /**
      * Basket reference id getter
+     *
      * @return string basketReferenceId
      */
     public function getBasketReferenceId()
@@ -269,6 +324,7 @@ class Basket extends AbstractObject
 
     /**
      * Currency code getter
+     *
      * @return string currency code
      */
     public function getCurrencyCode()
@@ -291,6 +347,7 @@ class Basket extends AbstractObject
 
     /**
      * Item count getter
+     *
      * @return int
      */
     public function getItemCount()
@@ -300,6 +357,7 @@ class Basket extends AbstractObject
 
     /**
      * Basket note getter
+     *
      * @return string
      */
     public function getNote()
@@ -380,7 +438,7 @@ class Basket extends AbstractObject
      * Determines the position of the BasketItem in the Basket
      *
      * @param BasketItem $item
-     * @param int|null $position
+     * @param int|null   $position
      *
      * @return int|null
      */
@@ -400,10 +458,26 @@ class Basket extends AbstractObject
 
         // if an item already exists on the determined position, just increase the result number...
         if ($result !== null && isset($this->basketItems[$result])) {
-            $result+= 1;
+            $result += 1;
         }
 
         return $result;
+    }
+
+    /**
+     * Magic getter.
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+
+        return null;
     }
 
     /**

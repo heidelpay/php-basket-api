@@ -14,8 +14,11 @@ use Heidelpay\PhpBasketApi\Object\Basket;
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Jens Richter
+ *
  * @package heidelpay\php-basket-api\interaction\object
  */
 class Request extends AbstractObject
@@ -48,7 +51,7 @@ class Request extends AbstractObject
     /**
      * @var null
      */
-    protected $adapter = null;
+    protected $adapter;
 
     /**
      * Request constructor.
@@ -56,10 +59,8 @@ class Request extends AbstractObject
      * @param Authentication|null $auth
      * @param Basket|null         $basket
      */
-    public function __construct(
-        Authentication $auth = null,
-        Basket $basket = null
-    ) {
+    public function __construct(Authentication $auth = null, Basket $basket = null)
+    {
         if ($auth !== null) {
             $this->authentication = $auth;
         }
@@ -72,6 +73,8 @@ class Request extends AbstractObject
     }
 
     /**
+     * Enables or disables Sandbox mode.
+     *
      * @param bool $isSandbox either if sandbox mode is enabled or not
      *
      * @return $this
@@ -92,11 +95,8 @@ class Request extends AbstractObject
      *
      * @return $this
      */
-    public function setAuthentication(
-        $login = null,
-        $password = null,
-        $senderId = null
-    ) {
+    public function setAuthentication($login = null, $password = null, $senderId = null)
+    {
         $this->authentication = new Authentication($login, $password, $senderId);
 
         return $this;

@@ -28,6 +28,21 @@ class Response extends AbstractObject
     const RESULT_NOK = 'NOK';
 
     /**
+     * @var string API method name for adding a basket
+     */
+    const METHOD_ADDNEWBASKET = 'addNewBasket';
+
+    /**
+     * @var string API method name for overwriting a basket
+     */
+    const METHOD_OVERWRITEBASKET = 'overwriteBasket';
+
+    /**
+     * @var string API method name for getting a basket
+     */
+    const METHOD_GETBASKET = 'getBasket';
+
+    /**
      * @var string Response result (either "ACK" or "NOK")
      */
     protected $result;
@@ -68,6 +83,7 @@ class Response extends AbstractObject
 
     /**
      * Returns true, if the request results in a 'ACK' (acknowledged).
+     *
      * @return bool
      */
     public function isSuccess()
@@ -77,6 +93,7 @@ class Response extends AbstractObject
 
     /**
      * Returns true, if the request results in a 'NOK' (not ok).
+     *
      * @return bool
      */
     public function isFailure()
@@ -85,6 +102,8 @@ class Response extends AbstractObject
     }
 
     /**
+     * Returns the Response result, which is either 'ACK' or 'NOK'.
+     *
      * @return string
      */
     public function getResult()
@@ -213,6 +232,8 @@ class Response extends AbstractObject
      * Parses a raw json response into a instance of this class.
      *
      * @param string $response a raw json response from a cURL request
+     *
+     * @throws BasketException
      */
     private function parseResponse($response)
     {
@@ -263,7 +284,9 @@ class Response extends AbstractObject
             $this->setBasket($basket);
 
             if (isset($obj->basket->itemCount) && $this->basket->getItemCount() != $obj->basket->itemCount) {
-                throw new BasketException();
+                throw new BasketException(
+                    'Itemcount ' . $this->basket->getItemCount() . ' does not match ' . $obj->basket->itemCount . '!'
+                );
             }
         }
 

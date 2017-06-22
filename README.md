@@ -28,4 +28,4 @@ Please visit https://dev.heidelpay.de/PhpApi/ for the developer documentation.
 
 ### UnitTest
 
-This library comes with a set of unit tests. Please be so kind and do not run all tests on any build.  
+This library comes with a set of unit tests. Please be so kind and do not run all tests on any build.

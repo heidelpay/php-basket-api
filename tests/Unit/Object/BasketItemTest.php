@@ -7,15 +7,21 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for the BasketItem Objects
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Stephano Vogel
+ *
  * @package heidelpay\php-basket-api\tests\unit
  */
 class BasketItemTest extends TestCase
 {
-    /** @var BasketItem the testing fixture */
+    /**
+     * @var BasketItem the testing fixture
+     */
     protected $basketItem;
 
     /**
@@ -50,10 +56,10 @@ class BasketItemTest extends TestCase
     {
         $referenceId = '136d24be-12b0-7d076a9e';
 
-        $this->assertNull($this->basketItem->getBasketItemReferenceId());
+        $this->assertNull($this->basketItem->getReferenceId());
 
         $this->basketItem->setBasketItemReferenceId($referenceId);
-        $this->assertEquals($referenceId, $this->basketItem->getBasketItemReferenceId());
+        $this->assertEquals($referenceId, $this->basketItem->getReferenceId());
     }
 
     /**

@@ -5,7 +5,7 @@ namespace Heidelpay\PhpBasketApi\Exception;
 use Exception;
 
 /**
- * Parameter Overflow Exception Class
+ * Curl Adapter Exception Class
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
@@ -16,6 +16,6 @@ use Exception;
  *
  * @package heidelpay\php-basket-api\exception
  */
-class ParameterOverflowException extends Exception
+class CurlAdapterException extends Exception
 {
 }

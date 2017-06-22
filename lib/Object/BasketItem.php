@@ -370,7 +370,7 @@ class BasketItem extends AbstractObject
     /**
      * @return string
      */
-    public function getBasketItemReferenceId()
+    public function getReferenceId()
     {
         return $this->basketItemReferenceId;
     }

@@ -129,7 +129,7 @@ class RequestTest extends TestCase
         $response = $request->addNewBasket();
 
         $this->assertEquals(Response::RESULT_ACK, $response->getResult());
-        $this->assertEquals('addNewBasket', $response->getMethod());
+        $this->assertEquals(Response::METHOD_ADDNEWBASKET, $response->getMethod());
         $this->assertNotEquals(null, $response->getBasketId(), 'BasketId is null.');
         $this->assertNotEquals(null, $response->getResult(), 'Result is null.');
         $this->assertNotEquals(null, $response->getMethod(), 'Method is null.');
@@ -155,7 +155,7 @@ class RequestTest extends TestCase
 
         // test, if Response matches expected values
         $this->assertEquals(Response::RESULT_ACK, $response->getResult());
-        $this->assertEquals('getBasket', $response->getMethod());
+        $this->assertEquals(Response::METHOD_GETBASKET, $response->getMethod());
         $this->assertEquals($basketId, $response->getBasketId());
 
         // test, if the basket contents are the same as requested first.
@@ -196,23 +196,25 @@ class RequestTest extends TestCase
         $request = new Request($this->auth);
         $request->setBasket($apiResponse->getBasket());
 
-        // we change the amounts (gross, net, vat) of BasketItem #3 to emulate changed shipping fees
+        // we change the amounts (gross, net, vat) of BasketItem #3, e.g. to emulate changed shipping fees
         $request->getBasket()->getBasketItemByPosition(3)->setAmountGross(1000);
         $request->getBasket()->getBasketItemByPosition(3)->setAmountNet(800);
         $request->getBasket()->getBasketItemByPosition(3)->setAmountVat(200);
+        $request->getBasket()->getBasketItemByPosition(3)->setVat(20);
 
         // do the overwrite request.
         $response = $request->overwriteBasket($apiResponse->getBasketId());
 
         // confirm the request was successful.
         $this->assertTrue($response->isSuccess());
-        $this->assertEquals('ACK', $response->getResult());
-        $this->assertEquals('overwriteBasket', $response->getMethod());
+        $this->assertEquals(Response::RESULT_ACK, $response->getResult());
+        $this->assertEquals(Response::METHOD_OVERWRITEBASKET, $response->getMethod());
 
         // confirm that no basket was returned and the basket id is still the same.
         $this->assertEquals($apiResponse->getBasketId(), $response->getBasketId());
         $this->assertNull($response->getBasket());
 
+        // return the basketId for the comparison test.
         return $response->getBasketId();
     }
 
@@ -239,9 +241,28 @@ class RequestTest extends TestCase
             $this->basket->getBasketItemByPosition(3)->getAmountVat(),
             $response->getBasket()->getBasketItemByPosition(3)->getAmountVat()
         );
+        $this->assertNotEquals(
+            $this->basket->getBasketItemByPosition(3)->getVat(),
+            $response->getBasket()->getBasketItemByPosition(3)->getVat()
+        );
         $this->assertEquals(
             $this->basket->getBasketItemByPosition(3)->getArticleId(),
             $response->getBasket()->getBasketItemByPosition(3)->getArticleId()
         );
+    }
+
+    /**
+     * Test for invalid authentication data
+     */
+    public function testInvalidAuthenticationData()
+    {
+        // overwrite the valid auth data with invalid data.
+        $this->auth = new Authentication('invalid', self::AUTH_PASSWORD, self::AUTH_SENDER_ID);
+
+        $request = new Request($this->auth, $this->basket);
+        $response = $request->addNewBasket();
+
+        $this->assertEquals(Response::RESULT_NOK, $response->getResult());
+        $this->assertNotEmpty($response->getBasketErrors());
     }
 }

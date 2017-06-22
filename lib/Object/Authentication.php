@@ -6,11 +6,15 @@ use Exception;
 use Heidelpay\PhpBasketApi\Exception\ParameterOverflowException;
 
 /**
- * Authentication object for heidelpay basket api
+ * Authentication object for the heidelpay basket api
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Jens Richter
+ *
  * @package heidelpay\php-basket-api\object
  */
 class Authentication extends AbstractObject
@@ -111,6 +115,9 @@ class Authentication extends AbstractObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getSender()
     {
         return $this->sender;
