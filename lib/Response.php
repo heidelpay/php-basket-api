@@ -9,14 +9,23 @@ use Heidelpay\PhpBasketApi\Object\BasketItem;
 
 /**
  * Representation of the heidelpay Basket API Response
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Stephano Vogel
+ *
  * @package heidelpay\php-basket-api\interaction\object
  */
 class Response extends AbstractObject
 {
+    /**
+     * @var string The application name
+     */
+    const APP_NAME = 'heidelpay Basket-API';
+
     /**
      * @var string ACK result code
      */
@@ -218,14 +227,17 @@ class Response extends AbstractObject
      */
     public function printMessage()
     {
-        $result = $this->isSuccess() ? 'SUCCESS' : 'FAILURE';
         $messages = [];
 
         foreach ($this->basketErrors as $basketError) {
             $messages[] = $basketError->printMessage();
         }
 
-        return sprintf('heidelpay Basket-API - Request %s. Message(s): %s', $result, join(', ', $messages));
+        if ($this->isSuccess()) {
+            return sprintf('%s - %s Request SUCCESS. %s', self::APP_NAME, $this->method, join(', ', $messages));
+        }
+
+        return sprintf('%s - %s Request FAILURE. %s', self::APP_NAME, $this->method, join(', ', $messages));
     }
 
     /**

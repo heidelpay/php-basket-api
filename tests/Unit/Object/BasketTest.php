@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Jens Richter
  *
- * @package heidelpay\php-basket-api\tests\unit
+ * @package heidelpay\php-basket-api\tests\unit\basket
  */
 class BasketTest extends TestCase
 {
@@ -90,6 +90,35 @@ class BasketTest extends TestCase
 
         $this->expectException(InvalidBasketitemIdException::class);
         $this->basket->getBasketItemByPosition(0);
+
+        //$this->expectException(InvalidBasketitemIdException::class);
+        $this->basket->deleteBasketItemByPosition(0);
+
+        //$this->expectException(InvalidBasketitemIdException::class);
+        $this->basket->deleteBasketItemByPosition(42);
+
+        $this->basket->deleteBasketItemByPosition(-1);
+    }
+
+    /**
+     * Unit test for the BasketItemReferenceId
+     */
+    public function testBasketItemReferenceId()
+    {
+        $referenceId = 'heidelpay-basketitem-test';
+
+        $item = new BasketItem();
+        $item->setBasketItemReferenceId($referenceId);
+        $this->basket->addBasketItem($item);
+
+        $this->assertNotNull($this->basket->getBasketItemByReferenceId($referenceId));
+        $this->assertNull($this->basket->getBasketItemByReferenceId('invalid-id'));
+
+        $this->assertEquals($this->basket, $this->basket->deleteBasketItemByReferenceId($referenceId));
+        $this->assertNull($this->basket->getBasketItemByReferenceId($referenceId));
+
+        $this->expectException(InvalidBasketitemIdException::class);
+        $this->basket->deleteBasketItemByReferenceId('invalid-id');
     }
 
     /**
@@ -142,5 +171,65 @@ class BasketTest extends TestCase
 
         $this->basket->setNote($value);
         $this->assertEquals($value, $this->basket->getNote());
+    }
+
+    /**
+     * Unit test for Voucher amount
+     */
+    public function testVoucherAmount()
+    {
+        $voucherAmount = 2500;
+
+        $this->assertNull($this->basket->getVoucherAmount());
+
+        $this->basket->setVoucherAmount($voucherAmount);
+        $this->assertEquals($voucherAmount, $this->basket->getVoucherAmount());
+    }
+
+    /**
+     * Unit test for Voucher Id
+     */
+    public function testVoucherId()
+    {
+        $voucherId = 'HAPPYNEWYEAR';
+
+        $this->assertNull($this->basket->getVoucherId());
+
+        $this->basket->setVoucherId($voucherId);
+        $this->assertEquals($voucherId, $this->basket->getVoucherId());
+    }
+
+    /**
+     * Unit test for magic getters and setters
+     */
+    public function testMagicGetter()
+    {
+        $testValue = 'Test';
+
+        // set test property and access it.
+        $this->basket->setNote($testValue);
+        $this->assertEquals($testValue, $this->basket->note);
+
+        // access invalid property and get null.
+        $this->assertNull($this->basket->test);
+    }
+
+    /**
+     * Unit test for JSON
+     */
+    public function testJsonSerializable()
+    {
+        $this->assertNotEmpty($this->basket->jsonSerialize());
+
+        $this->assertArrayHasKey('amountTotalNet', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('amountTotalVat', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('amountTotalDiscount', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('basketReferenceId', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('currencyCode', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('itemCount', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('note', $this->basket->jsonSerialize());
+        $this->assertArrayHasKey('basketItems', $this->basket->jsonSerialize());
+
+        $this->assertNotEmpty($this->basket->toJson());
     }
 }

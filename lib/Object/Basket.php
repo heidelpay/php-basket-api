@@ -2,6 +2,7 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
+use Heidelpay\PhpBasketApi\Exception\BasketItemException;
 use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
 
 /**

@@ -130,6 +130,10 @@ class RequestTest extends TestCase
 
         $this->assertEquals(Response::RESULT_ACK, $response->getResult());
         $this->assertEquals(Response::METHOD_ADDNEWBASKET, $response->getMethod());
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_ADDNEWBASKET, $response->printMessage());
+
         $this->assertNotEquals(null, $response->getBasketId(), 'BasketId is null.');
         $this->assertNotEquals(null, $response->getResult(), 'Result is null.');
         $this->assertNotEquals(null, $response->getMethod(), 'Method is null.');
@@ -157,6 +161,9 @@ class RequestTest extends TestCase
         $this->assertEquals(Response::RESULT_ACK, $response->getResult());
         $this->assertEquals(Response::METHOD_GETBASKET, $response->getMethod());
         $this->assertEquals($basketId, $response->getBasketId());
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_GETBASKET, $response->printMessage());
 
         // test, if the basket contents are the same as requested first.
         $this->assertEquals($this->basket->getBasketReferenceId(), $response->getBasket()->getBasketReferenceId());
@@ -210,6 +217,9 @@ class RequestTest extends TestCase
         $this->assertEquals(Response::RESULT_ACK, $response->getResult());
         $this->assertEquals(Response::METHOD_OVERWRITEBASKET, $response->getMethod());
 
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_OVERWRITEBASKET, $response->printMessage());
+
         // confirm that no basket was returned and the basket id is still the same.
         $this->assertEquals($apiResponse->getBasketId(), $response->getBasketId());
         $this->assertNull($response->getBasket());
@@ -227,6 +237,9 @@ class RequestTest extends TestCase
     {
         $request = new Request($this->auth);
         $response = $request->retrieveBasket($basketId);
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_GETBASKET, $response->printMessage());
 
         // compare the original basket with the overwritten one (which we just loaded again via api call)
         $this->assertNotEquals(
@@ -256,13 +269,19 @@ class RequestTest extends TestCase
      */
     public function testInvalidAuthenticationData()
     {
-        // overwrite the valid auth data with invalid data.
-        $this->auth = new Authentication('invalid', self::AUTH_PASSWORD, self::AUTH_SENDER_ID);
+        $request = new Request();
 
-        $request = new Request($this->auth, $this->basket);
+        // set invalid auth data.
+        $request->setAuthentication('invalid', self::AUTH_PASSWORD, self::AUTH_SENDER_ID);
+        $request->setBasket($this->basket);
+
         $response = $request->addNewBasket();
 
         $this->assertEquals(Response::RESULT_NOK, $response->getResult());
+        $this->assertEquals(Response::METHOD_ADDNEWBASKET, $response->getMethod());
         $this->assertNotEmpty($response->getBasketErrors());
+
+        $this->assertContains('FAILURE', $response->printMessage());
+        $this->assertContains(Response::METHOD_ADDNEWBASKET, $response->printMessage());
     }
 }

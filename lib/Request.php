@@ -2,9 +2,8 @@
 
 namespace Heidelpay\PhpBasketApi;
 
+use Heidelpay\PhpBasketApi\Adapter\AdapterInterface;
 use Heidelpay\PhpBasketApi\Adapter\CurlAdapter;
-use Heidelpay\PhpBasketApi\Exception\EmptyAuthenticationException;
-use Heidelpay\PhpBasketApi\Exception\EmptyBasketException;
 use Heidelpay\PhpBasketApi\Object\AbstractObject;
 use Heidelpay\PhpBasketApi\Object\Authentication;
 use Heidelpay\PhpBasketApi\Object\Basket;
@@ -36,12 +35,12 @@ class Request extends AbstractObject
     /**
      * @var Authentication The authentication object
      */
-    protected $authentication = null;
+    protected $authentication;
 
     /**
      * @var Basket The basket object
      */
-    protected $basket = null;
+    protected $basket;
 
     /**
      * @var bool If the request is being sent to the test environment.
@@ -49,7 +48,7 @@ class Request extends AbstractObject
     protected $isSandbox = true;
 
     /**
-     * @var null
+     * @var AdapterInterface
      */
     protected $adapter;
 
@@ -84,6 +83,16 @@ class Request extends AbstractObject
         $this->isSandbox = $isSandbox;
 
         return $this;
+    }
+
+    /**
+     * Determines if the SDK runs in sandbox mode.
+     *
+     * @return bool
+     */
+    public function isSandboxMode()
+    {
+        return $this->isSandbox;
     }
 
     /**
@@ -151,14 +160,9 @@ class Request extends AbstractObject
      * @param string $basketId
      *
      * @return Response
-     * @throws EmptyAuthenticationException
      */
     public function retrieveBasket($basketId)
     {
-        if ($this->authentication === null) {
-            throw new EmptyAuthenticationException();
-        }
-
         return new Response($this->adapter->sendPost($this->generateUrl('get/' . $basketId), $this));
     }
 
@@ -166,22 +170,11 @@ class Request extends AbstractObject
      * Submits a basket and returns a Response.
      *
      * @return Response
-     * @throws EmptyAuthenticationException
-     * @throws EmptyBasketException
      */
     public function addNewBasket()
     {
-        if ($this->authentication === null) {
-            throw new EmptyAuthenticationException();
-        }
-
-        if ($this->basket === null) {
-            throw new EmptyBasketException();
-        }
-
         return new Response($this->adapter->sendPost($this->generateUrl(), $this));
     }
-
 
     /**
      * Submits the current Basket to overwrite/change the basket with the given $basketId,
@@ -190,22 +183,10 @@ class Request extends AbstractObject
      * @param string $basketId
      *
      * @return Response
-     * @throws EmptyAuthenticationException
-     * @throws EmptyBasketException
      */
     public function overwriteBasket($basketId)
     {
-        if ($this->authentication === null) {
-            throw new EmptyAuthenticationException();
-        }
-
-        if ($this->basket === null) {
-            throw new EmptyBasketException();
-        }
-
-        return new Response(
-            $this->adapter->sendPost($this->generateUrl($basketId), $this)
-        );
+        return new Response($this->adapter->sendPost($this->generateUrl($basketId), $this));
     }
 
     /**
@@ -218,16 +199,6 @@ class Request extends AbstractObject
     private function generateUrl($suffix = null)
     {
         $base = $this->isSandbox ? self::URL_TEST : self::URL_LIVE;
-
-        // add a trailing slash to the base url, if not present
-        if (substr($base, -1, 1) !== '/') {
-            $base .= '/';
-        }
-
-        // remove a leading slash of the suffix, if present
-        if ($suffix !== null && substr($suffix, 0, 1) === '/') {
-            $suffix = substr($suffix, 1, strlen($suffix) - 1);
-        }
 
         return sprintf('%s%s', $base, $suffix);
     }

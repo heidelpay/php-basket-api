@@ -2,7 +2,7 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
+use Heidelpay\PhpBasketApi\Exception\BasketItemException;
 
 /**
  *  Item object for heidelpay api
@@ -281,13 +281,13 @@ class BasketItem extends AbstractObject
      *
      * @param int $position
      *
-     * @throws InvalidBasketitemIdException
+     * @throws BasketItemException
      * @return $this
      */
     public function setPosition($position)
     {
         if ($position <= 0) {
-            throw new InvalidBasketitemIdException('BasketItem position cannot be equal or less than 0.');
+            throw new BasketItemException('BasketItem position cannot be equal or less than 0.');
         }
 
         $this->position = $position;

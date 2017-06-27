@@ -2,6 +2,7 @@
 
 namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
+use Heidelpay\PhpBasketApi\Exception\BasketItemException;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Stephano Vogel
  *
- * @package heidelpay\php-basket-api\tests\unit
+ * @package heidelpay\php-basket-api\tests\unit\basketitem
  */
 class BasketItemTest extends TestCase
 {
@@ -47,6 +48,10 @@ class BasketItemTest extends TestCase
 
         $this->basketItem->setPosition($position1);
         $this->assertEquals($position1, $this->basketItem->getPosition());
+
+        // throw an exception, when position is <= 0
+        $this->expectException(BasketItemException::class);
+        $this->basketItem->setPosition(0);
     }
 
     /**
@@ -278,5 +283,122 @@ class BasketItemTest extends TestCase
 
         $this->basketItem->setImageUrl($imageUrlPlaceHoldIt);
         $this->assertEquals($imageUrlPlaceHoldIt, $this->basketItem->getImageUrl());
+    }
+
+    /**
+     * Unit test for the Channel
+     */
+    public function testChannel()
+    {
+        $channel = 'test';
+
+        $this->assertNull($this->basketItem->getChannel());
+
+        $this->basketItem->setChannel($channel);
+        $this->assertEquals($channel, $this->basketItem->getChannel());
+    }
+
+    /**
+     * Unit test for the Transaction-Id
+     */
+    public function testTransactionId()
+    {
+        $transactionId = '312451asfasb12';
+
+        $this->assertNull($this->basketItem->getTransactionId());
+
+        $this->basketItem->setTransactionId($transactionId);
+        $this->assertEquals($transactionId, $this->basketItem->getTransactionId());
+    }
+
+    /**
+     * Unit test for the usage
+     */
+    public function testUsage()
+    {
+        $usage = 'Test item for unit testing';
+
+        $this->assertNull($this->basketItem->getUsage());
+
+        $this->basketItem->setUsage($usage);
+        $this->assertEquals($usage, $this->basketItem->getUsage());
+    }
+
+    /**
+     * Unit test for the commission rate
+     */
+    public function testCommissionRate()
+    {
+        $rate = 5.5;
+
+        $this->assertNull($this->basketItem->getCommissionRate());
+
+        $this->basketItem->setCommissionRate($rate);
+        $this->assertEquals($rate, $this->basketItem->getCommissionRate());
+    }
+
+    /**
+     * Unit test for the Voucher amount
+     */
+    public function testVoucherAmount()
+    {
+        $voucherAmount = 2500;
+
+        $this->assertNull($this->basketItem->getVoucherAmount());
+
+        $this->basketItem->setVoucherAmount($voucherAmount);
+        $this->assertEquals($voucherAmount, $this->basketItem->getVoucherAmount());
+    }
+
+    /**
+     * Unit test for the Voucher Id
+     */
+    public function testVoucherId()
+    {
+        $voucherId = 'FREESHIPPING';
+
+        $this->assertNull($this->basketItem->getVoucherId());
+
+        $this->basketItem->setVoucherId($voucherId);
+        $this->assertEquals($voucherId, $this->basketItem->getVoucherId());
+    }
+
+    /**
+     * Unit test for the article category
+     */
+    public function testArticleCategory()
+    {
+        $articleCategory = 'Goods';
+
+        $this->assertNull($this->basketItem->getArticleCategory());
+
+        $this->basketItem->setArticleCategory($articleCategory);
+        $this->assertEquals($articleCategory, $this->basketItem->getArticleCategory());
+    }
+
+    /**
+     * Unit test for JSON
+     */
+    public function testJsonSerializable()
+    {
+        $this->assertNotEmpty($this->basketItem->jsonSerialize());
+
+        $this->assertArrayHasKey('position', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('basketItemReferenceId', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('articleId', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('title', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('description', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('amountGross', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('amountNet', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('amountPerUnit', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('amountVat', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('amountDiscount', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('unit', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('quantity', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('vat', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('type', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('imageUrl', $this->basketItem->jsonSerialize());
+
+        $this->assertNotEmpty($this->basketItem->toJson());
     }
 }

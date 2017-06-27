@@ -16,7 +16,7 @@ use Heidelpay\PhpBasketApi\Request;
  *
  * @author Stephano Vogel
  *
- * @package heidelpay/php-basket-api/interfaces/adapter
+ * @package heidelpay\php-basket-api\interfaces\adapter
  */
 interface AdapterInterface
 {
