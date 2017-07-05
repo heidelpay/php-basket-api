@@ -6,10 +6,14 @@ use Heidelpay\PhpBasketApi\Object\AbstractObject;
 
 /**
  * Respresentation of the heidelpay Basket API Error
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Stephano Vogel
+ *
  * @package heidelpay\php-basket-api\interaction\object
  */
 class BasketError extends AbstractObject

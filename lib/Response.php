@@ -223,6 +223,7 @@ class Response extends AbstractObject
 
     /**
      * Prints a formatted message of the Response, including the basket errors.
+     *
      * @return string
      */
     public function printMessage()

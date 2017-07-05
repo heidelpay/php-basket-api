@@ -392,10 +392,13 @@ class Basket extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param int $voucherAmount
+     *
+     * @return $this
      */
     public function setVoucherAmount($voucherAmount)
     {
         $this->voucherAmount = $voucherAmount;
+        return $this;
     }
 
     /**
@@ -411,10 +414,13 @@ class Basket extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param string $voucherId
+     *
+     * @return $this
      */
     public function setVoucherId($voucherId)
     {
         $this->voucherId = $voucherId;
+        return $this;
     }
 
     /**

@@ -14,9 +14,12 @@ use PHPUnit\Framework\TestCase;
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ *
  * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Stephano Vogel
- * @package heidelpay\php-basket-api\tests\integration
+ *
+ * @package heidelpay\php-basket-api\tests\integration\request
  */
 class RequestTest extends TestCase
 {

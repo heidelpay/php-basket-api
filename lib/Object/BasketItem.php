@@ -5,104 +5,91 @@ namespace Heidelpay\PhpBasketApi\Object;
 use Heidelpay\PhpBasketApi\Exception\BasketItemException;
 
 /**
- *  Item object for heidelpay api
+ * Item object for heidelpay api
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
- * @link  https://dev.heidelpay.de/php-basket-api
+ *
+ * @link https://dev.heidelpay.de/php-basket-api
+ *
  * @author Jens Richter
+ *
  * @package heidelpay\php-basket-api\object
  */
 class BasketItem extends AbstractObject
 {
     /**
-     * The position of the item in the basket (optional)
-     * @var int $position
+     * @var int The position of the item in the basket (optional)
      */
     protected $position;
 
     /**
-     * The unique basketitem reference id (mandatory)
-     * @var string $basketItemReferenceId
+     * @var string The unique basketitem reference id (mandatory)
      */
     protected $basketItemReferenceId;
 
     /**
-     * The unit description of the item e.g. "Stk." (optional)
-     * @var string $unit
+     * @var string The unit description of the item e.g. "Stk." (optional)
      */
     protected $unit;
 
     /**
-     * The quantity of the basket item (mandatory)
-     * @var int $quantity
+     * @var int The quantity of the basket item (mandatory)
      */
     protected $quantity;
 
     /**
-     * The discount amount for the basket item (optinal)
-     * @var int $amountDiscount
+     * @var int The discount amount for the basket item (optinal)
      */
     protected $amountDiscount;
 
     /**
-     * The vat value for the basket item in percent (conditional)
-     * @var int $vat
+     * @var int The vat value for the basket item in percent (conditional)
      */
     protected $vat;
 
     /**
-     * The gross amount (conditional)
-     * amountNet + amountVat. This value could be the same value as the net amount if the vat value is 0
-     * @var int $amountGross
+     * @var int The gross amount (conditional), means amountNet + amountVat.
      */
     protected $amountGross;
 
     /**
-     * The vat amount, this value could be 0 if the vat value is 0 (conditional)
-     * @var int $amountVat
+     * @var int The vat amount, this value could be 0 if the vat value is 0 (conditional)
      */
     protected $amountVat;
 
     /**
-     * The amount per unit (mandatory)
-     * @var int $amountPerUnit
+     * @var int The amount per unit (mandatory)
      */
     protected $amountPerUnit;
 
     /**
-     * The net amount (mandatory)
-     * This value could be the same value as the gross amount if the vat value is 0
-     * @var int $amountNet
+     * @var int This value could be the same value as the gross amount if the vat value is 0
      */
     protected $amountNet;
 
     /**
-     * The shop article id for the basket item (optional)
-     * @var string $articleId
+     * @var string The shop article id for the basket item (optional)
      */
     protected $articleId;
 
     /**
-     * The type of the basket item, e.g. "goods", "shipment", "voucher", "digital" or "physical" (optional)
-     * @var string $type
+     * @var string The type of the basket item, e.g. "goods", "shipment", "voucher", "digital" or "physical" (optional)
      */
     protected $type;
 
     /**
-     * The title of the basket item (mandatory)
-     * @var string $title
+     * @var string The title of the basket item (mandatory)
      */
     protected $title;
 
     /**
-     * A description for the basket item (optional)
-     * @var string $description
+     * @var string A description for the basket item (optional)
      */
     protected $description;
 
     /**
-     * A image url e.g. https://placehold.it/32x32 (optional)
-     * @var string $imageUrl
+     * @var string A image url e.g. https://placehold.it/32x32 (optional)
      */
     protected $imageUrl;
 
@@ -150,6 +137,7 @@ class BasketItem extends AbstractObject
 
     /**
      * Attributes that are mandatory for every BasketItem
+     *
      * @var array
      */
     protected $mandatory = [
@@ -203,10 +191,13 @@ class BasketItem extends AbstractObject
      * Amount per unit setter
      *
      * @param int $value
+     *
+     * @return $this
      */
     public function setAmountPerUnit($value)
     {
         $this->amountPerUnit = $value;
+        return $this;
     }
 
     /**
@@ -263,6 +254,7 @@ class BasketItem extends AbstractObject
 
     /**
      * Image url setter
+     *
      * If possible provide a https source - http images could be blocked due to
      * browser securtiy restrictions.
      *
@@ -492,10 +484,13 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param string $channel
+     *
+     * @return $this
      */
     public function setChannel($channel)
     {
         $this->channel = $channel;
+        return $this;
     }
 
     /**
@@ -511,10 +506,13 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param string $transactionId
+     *
+     * @return $this
      */
     public function setTransactionId($transactionId)
     {
         $this->transactionId = $transactionId;
+        return $this;
     }
 
     /**
@@ -530,10 +528,13 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param string $usage
+     *
+     * @return $this
      */
     public function setUsage($usage)
     {
         $this->usage = $usage;
+        return $this;
     }
 
     /**
@@ -549,10 +550,13 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param int $commissionRate
+     *
+     * @return $this
      */
     public function setCommissionRate($commissionRate)
     {
         $this->commissionRate = $commissionRate;
+        return $this;
     }
 
     /**
@@ -568,10 +572,13 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param int $voucherAmount
+     *
+     * @return $this
      */
     public function setVoucherAmount($voucherAmount)
     {
         $this->voucherAmount = $voucherAmount;
+        return $this;
     }
 
     /**
@@ -587,14 +594,18 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param string $voucherId
+     *
+     * @return $this
      */
     public function setVoucherId($voucherId)
     {
         $this->voucherId = $voucherId;
+        return $this;
     }
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return string
      */
     public function getArticleCategory()
@@ -606,10 +617,13 @@ class BasketItem extends AbstractObject
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
      *
      * @param string $articleCategory
+     *
+     * @return $this
      */
     public function setArticleCategory($articleCategory)
     {
         $this->articleCategory = $articleCategory;
+        return $this;
     }
 
     /**
