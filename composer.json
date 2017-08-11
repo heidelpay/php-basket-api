@@ -28,7 +28,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Heidelpay\\Tests\\PhpBasketApi\\": "tests/",
+      "Heidelpay\\Tests\\PhpBasketApi\\": "tests/"
     }
   },
   "support": {
