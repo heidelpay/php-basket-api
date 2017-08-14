@@ -3,10 +3,12 @@
 
 ![Logo](https://dev.heidelpay.de/devHeidelpay_400_180.jpg)
 
+#### Please note that this package is still considered as a beta and not meant to be used in production.
+
+
 # Welcome to the heidelpay basket api
 
 This is the php basket api for heidelpay. The library will help you to easily integrate heidelpay into your application.
-
 
 ### SYSTEM REQUIREMENTS
 
