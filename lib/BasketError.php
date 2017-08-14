@@ -30,6 +30,7 @@ class BasketError extends AbstractObject
 
     /**
      * Returns the Errorcode
+     *
      * @return string
      */
     public function getCode()
@@ -37,6 +38,11 @@ class BasketError extends AbstractObject
         return $this->code;
     }
 
+    /**
+     * Returns the Error Message
+     *
+     * @return string
+     */
     public function getMessage()
     {
         return $this->message;
@@ -81,6 +87,11 @@ class BasketError extends AbstractObject
         ];
     }
 
+    /**
+     * Prints the error message that the BasketError instance represents.
+     *
+     * @return string
+     */
     public function printMessage()
     {
         return sprintf('[Errorcode %s, Message: %s]', $this->code, $this->message);
