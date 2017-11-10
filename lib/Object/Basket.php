@@ -2,8 +2,8 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use Heidelpay\PhpBasketApi\Exception\BasketItemException;
 use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 
 /**
  * heidelpay Basket
@@ -159,148 +159,6 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Returns all BasketItems
-     *
-     * @return BasketItem[]
-     */
-    public function getBasketItems()
-    {
-        return $this->basketItems;
-    }
-
-    /**
-     * Returns the basket item with the given position
-     *
-     * @param int $position
-     *
-     * @throws InvalidBasketitemIdException
-     * @return BasketItem|null
-     */
-    public function getBasketItemByPosition($position)
-    {
-        if ($position <= 0) {
-            throw new InvalidBasketitemIdException('BasketItem position cannot be equal or less than 0.');
-        }
-
-        if (array_key_exists($position - 1, $this->basketItems)) {
-            return $this->basketItems[$position - 1];
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns a BasketItem by it's reference id.
-     *
-     * @param string $referenceId
-     *
-     * @return BasketItem|null
-     */
-    public function getBasketItemByReferenceId($referenceId)
-    {
-        foreach ($this->getBasketItems() as $basketItem) {
-            if ($basketItem->getReferenceId() === $referenceId) {
-                return $basketItem;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Add item to basket object
-     *
-     * @param BasketItem $item The BasketItem to be added
-     * @param int|null   $position The position where the item should be placed (optional)
-     *
-     * @throws InvalidBasketitemIdException
-     * @return $this
-     */
-    public function addBasketItem(BasketItem $item, $position = null)
-    {
-        $realPosition = $this->getBasketItemPosition($item, $position);
-
-        if ($realPosition === null) {
-            $item->setPosition($this->getItemCount() + 1);
-            $this->basketItems[] = $item;
-            return $this;
-        }
-
-        $this->basketItems[$realPosition] = $item;
-        sort($this->basketItems);
-
-        return $this;
-    }
-
-    /**
-     * Updates the object at the given index.
-     *
-     * @param BasketItem $item the item to be set
-     * @param int        $position The position of the BasketItem
-     *
-     * @throws InvalidBasketitemIdException
-     * @return $this
-     */
-    public function updateBasketItem(BasketItem $item, $position = 0)
-    {
-        $realPosition = $this->getBasketItemPosition($item, $position);
-
-        if ($realPosition === null) {
-            throw new InvalidBasketitemIdException('Invalid BasketItem position: ' . $position);
-        }
-
-        if (array_key_exists($realPosition, $this->basketItems)) {
-            $this->basketItems[$realPosition] = $item;
-            return $this;
-        }
-
-        throw new InvalidBasketitemIdException('Basket item with id ' . $position . ' does not exist.');
-    }
-
-    /**
-     * Removes an item of the basket at the given position.
-     *
-     * @param int $position the basket index of the item
-     *
-     * @throws InvalidBasketitemIdException
-     * @return $this
-     */
-    public function deleteBasketItemByPosition($position)
-    {
-        if ($position <= 0) {
-            throw new InvalidBasketitemIdException('BasketItem position cannot be equal or less than 0.');
-        }
-
-        if (array_key_exists($position - 1, $this->basketItems)) {
-            unset($this->basketItems[$position - 1]);
-            return $this;
-        }
-
-        throw new InvalidBasketitemIdException('Basket item with id ' . $position . ' does not exist.');
-    }
-
-    /**
-     * Deletes a BasketItem by it's reference id.
-     *
-     * @param string $referenceId
-     *
-     * @return $this
-     *
-     * @throws InvalidBasketitemIdException
-     */
-    public function deleteBasketItemByReferenceId($referenceId)
-    {
-        foreach ($this->getBasketItems() as $basketItem) {
-            if ($basketItem->getReferenceId() === $referenceId) {
-                unset($this->basketItems[$basketItem->getPosition() - 1]);
-                return $this;
-            }
-        }
-
-        throw new InvalidBasketitemIdException('Basket item with refereceId ' . $referenceId . ' does not exist.');
-    }
-
-    /**
      * Basket reference id getter
      *
      * @return string basketReferenceId
@@ -424,6 +282,185 @@ class Basket extends AbstractObject
     }
 
     /**
+     * Returns all BasketItems
+     *
+     * @return BasketItem[]
+     */
+    public function getBasketItems()
+    {
+        return $this->basketItems;
+    }
+
+    /**
+     * Returns the basket item with the given position
+     *
+     * @param int $position
+     *
+     * @throws InvalidBasketitemPositionException
+     * @return BasketItem|null
+     */
+    public function getBasketItemByPosition($position)
+    {
+        if ($position <= 0) {
+            throw new InvalidBasketitemPositionException('BasketItem position cannot be equal or less than 0.');
+        }
+
+        if (array_key_exists($position - 1, $this->basketItems)) {
+            return $this->basketItems[$position - 1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a BasketItem by it's reference id.
+     *
+     * @param string $referenceId
+     *
+     * @return BasketItem|null
+     */
+    public function getBasketItemByReferenceId($referenceId)
+    {
+        foreach ($this->getBasketItems() as $basketItem) {
+            if ($basketItem->getReferenceId() === $referenceId) {
+                return $basketItem;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $position
+     *
+     * @throws InvalidBasketitemPositionException
+     * @return BasketItem
+     */
+    private function getBasketItemByRealPosition($position)
+    {
+        if (isset($this->basketItems[$position])) {
+            return $this->basketItems[$position];
+        }
+
+        throw new InvalidBasketitemPositionException('BasketItem position ' . $position . ' is invalid.');
+    }
+
+    /**
+     * Add item to basket object
+     *
+     * @param BasketItem $item The BasketItem to be added
+     * @param int|null   $position The position where the item should be placed (optional)
+     * @param bool       $autoIncrease If the BasketItem amounts can be added to the Basket automatically
+     *
+     * @throws InvalidBasketitemPositionException
+     * @return $this
+     */
+    public function addBasketItem(BasketItem $item, $position = null, $autoIncrease = true)
+    {
+        $realPosition = $this->getBasketItemPosition($item, $position);
+
+        if ($realPosition === null) {
+            $item->setPosition($this->getItemCount() + 1);
+
+            if ($autoIncrease) {
+                $this->addBasketItemAmountsToBasket($item);
+            }
+
+            $this->basketItems[] = $item;
+            return $this;
+        }
+
+        $this->basketItems[$realPosition] = $item;
+        sort($this->basketItems);
+
+        return $this;
+    }
+
+    /**
+     * Updates the object at the given index.
+     *
+     * @param BasketItem $item the item to be set
+     * @param int        $position The position of the BasketItem
+     * @param bool       $autoUpdate If Basket amounts should be updated automatically
+     *
+     * @throws InvalidBasketitemPositionException
+     * @return $this
+     */
+    public function updateBasketItem(BasketItem $item, $position = 0, $autoUpdate = true)
+    {
+        $realPosition = $this->getBasketItemPosition($item, $position);
+
+        if ($realPosition === null) {
+            throw new InvalidBasketitemPositionException('Invalid BasketItem position: ' . $position);
+        }
+
+        if (array_key_exists($realPosition, $this->basketItems)) {
+            if ($autoUpdate) {
+                $oldItem = $this->getBasketItemByRealPosition($realPosition);
+                $this->updateAmountBalances($oldItem, $item);
+            }
+
+            $this->basketItems[$realPosition] = $item;
+            return $this;
+        }
+
+        throw new InvalidBasketitemPositionException('Basket item with id ' . $position . ' does not exist.');
+    }
+
+    /**
+     * Removes an item of the basket at the given position.
+     *
+     * @param int $position the basket index of the item
+     * @param bool $autoDecrease decrease Basket amounts by BasketItem amounts
+     *
+     * @throws InvalidBasketitemPositionException
+     * @return $this
+     */
+    public function deleteBasketItemByPosition($position, $autoDecrease = true)
+    {
+        if ($position <= 0) {
+            throw new InvalidBasketitemPositionException('BasketItem position cannot be equal or less than 0.');
+        }
+
+        if (array_key_exists($position - 1, $this->basketItems)) {
+            if ($autoDecrease) {
+                $this->decreaseBasketItemAmountsFromBasket($this->getBasketItemByPosition($position));
+            }
+
+            unset($this->basketItems[$position - 1]);
+            return $this;
+        }
+
+        throw new InvalidBasketitemPositionException('Basket item on position ' . $position . ' does not exist.');
+    }
+
+    /**
+     * Deletes a BasketItem by it's reference id.
+     *
+     * @param string $referenceId
+     * @param bool $autoDecrease decrease Basket amounts by BasketItem amounts
+     *
+     * @return $this
+     *
+     * @throws InvalidBasketitemIdException
+     */
+    public function deleteBasketItemByReferenceId($referenceId, $autoDecrease = true)
+    {
+        foreach ($this->getBasketItems() as $basketItem) {
+            if ($basketItem->getReferenceId() === $referenceId) {
+                if ($autoDecrease) {
+                    $this->decreaseBasketItemAmountsFromBasket($basketItem);
+                }
+
+                unset($this->basketItems[$basketItem->getPosition() - 1]);
+                return $this;
+            }
+        }
+
+        throw new InvalidBasketitemIdException('Basket item with refereceId ' . $referenceId . ' does not exist.');
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()
@@ -442,7 +479,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Determines the position of the BasketItem in the Basket
+     * Determines the position of the BasketItem in the BasketItem array.
      *
      * @param BasketItem $item
      * @param int|null   $position
@@ -465,14 +502,168 @@ class Basket extends AbstractObject
 
         // if an item already exists on the determined position, just increase the result number...
         if ($result !== null && isset($this->basketItems[$result])) {
-            $result += 1;
+            ++$result;
         }
 
         return $result;
     }
 
     /**
-     * Magic getter.
+     * Increases the total discount amount.
+     *
+     * @param int $amount
+     */
+    public function addAmountTotalDiscount($amount)
+    {
+        $this->amountTotalDiscount += $amount;
+    }
+
+    /**
+     * Decreases the total discount amount.
+     *
+     * @param int $amount
+     */
+    public function decreaseAmountTotalDiscount($amount)
+    {
+        $this->amountTotalDiscount -= $amount;
+    }
+
+    /**
+     * Increases the total net amount.
+     *
+     * @param int $amount
+     */
+    public function addAmountTotalNet($amount)
+    {
+        $this->amountTotalNet += $amount;
+    }
+
+    /**
+     * Decreases the total net amount.
+     *
+     * @param int $amount
+     */
+    public function decreaseAmountTotalNet($amount)
+    {
+        $this->amountTotalNet -= $amount;
+    }
+
+    /**
+     * Increases the total vat amount.
+     *
+     * @param int $amount
+     */
+    public function addAmountTotalVat($amount)
+    {
+        $this->amountTotalVat += $amount;
+    }
+
+    /**
+     * Decreases the total vat amount.
+     *
+     * @param int $amount
+     */
+    public function decreaseAmountTotalVat($amount)
+    {
+        $this->amountTotalVat -= $amount;
+    }
+
+    /**
+     * Increases the Basket amounts by the BasketItem amounts.
+     *
+     * @param BasketItem $basketItem
+     */
+    private function addBasketItemAmountsToBasket(BasketItem $basketItem)
+    {
+        $this->addAmountTotalDiscount($basketItem->getAmountDiscount());
+        $this->addAmountTotalNet($basketItem->getAmountNet());
+        $this->addAmountTotalVat($basketItem->getAmountVat());
+    }
+
+    /**
+     * Decreases the Basket amounts by the BasketItem amounts.
+     *
+     * @param BasketItem $basketItem
+     */
+    private function decreaseBasketItemAmountsFromBasket(BasketItem $basketItem)
+    {
+        $this->decreaseAmountTotalDiscount($basketItem->getAmountDiscount());
+        $this->decreaseAmountTotalNet($basketItem->getAmountNet());
+        $this->decreaseAmountTotalVat($basketItem->getAmountVat());
+    }
+
+    /**
+     * Updates the Basket balances according to the differences
+     * of an updated BasketItem and it's predecessor
+     *
+     * @param BasketItem $oldItem
+     * @param BasketItem $newItem
+     */
+    private function updateAmountBalances(BasketItem $oldItem, BasketItem $newItem)
+    {
+        $discountBalance = $newItem->getAmountDiscount() - $oldItem->getAmountDiscount();
+        if ($discountBalance !== 0) {
+            $this->updateDiscountAmountBalance($discountBalance);
+        }
+
+        $netBalance = $newItem->getAmountDiscount() - $oldItem->getAmountNet();
+        if ($netBalance !== 0) {
+            $this->updateNetAmountBalance($netBalance);
+        }
+
+        $vatBalance = $newItem->getAmountVat() - $oldItem->getAmountVat();
+        if ($vatBalance !== 0) {
+            $this->updateVatAmountBalance($vatBalance);
+        }
+    }
+
+    /**
+     * Updates the Basket discount amount depending on the given amount.
+     *
+     * @param int $amount
+     */
+    private function updateDiscountAmountBalance($amount)
+    {
+        if ($amount > 0) {
+            $this->addAmountTotalDiscount($amount);
+            return;
+        }
+
+        $this->decreaseAmountTotalDiscount($amount);
+    }
+
+    /**
+     * Updates the Basket net amount depending on the given amount.
+     *
+     * @param int $amount
+     */
+    private function updateNetAmountBalance($amount)
+    {
+        if ($amount > 0) {
+            $this->addAmountTotalNet($amount);
+            return;
+        }
+
+        $this->decreaseAmountTotalNet($amount);
+    }
+
+    /**
+     * Updates the Basket vat amount depending on the given amount.
+     *
+     * @param int $amount
+     */
+    private function updateVatAmountBalance($amount)
+    {
+        if ($amount > 0) {
+            $this->addAmountTotalVat($amount);
+            return;
+        }
+
+        $this->decreaseAmountTotalVat($amount);
+    }
+
+    /**
+     * Magic getter for properties.
      *
      * @param $name
      *
@@ -498,5 +689,20 @@ class Basket extends AbstractObject
         if (property_exists($this, $field)) {
             $this->$field = $value;
         }
+    }
+
+    /**
+     * Isset implementation for the __set method
+     *
+     * @param $field
+     * @return bool
+     */
+    public function __isset($field)
+    {
+        if (!property_exists($this, $field)) {
+            return false;
+        }
+
+        return true;
     }
 }

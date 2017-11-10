@@ -201,7 +201,7 @@ class RequestTest extends TestCase
      *
      * @return string
      */
-    public function testOverwriteBasket(Response $apiResponse)
+    public function testOverwriteBasketByChangeAmounts(Response $apiResponse)
     {
         $request = new Request($this->auth);
         $request->setBasket($apiResponse->getBasket());
@@ -232,11 +232,13 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @depends testOverwriteBasket
+     * @depends testOverwriteBasketByChangeAmounts
      *
      * @param string $basketId
+     *
+     * @return string
      */
-    public function testOverwrittenBasketComparison($basketId)
+    public function testOverwrittenBasketByChangeAmountsComparison($basketId)
     {
         $request = new Request($this->auth);
         $response = $request->retrieveBasket($basketId);
@@ -265,6 +267,62 @@ class RequestTest extends TestCase
             $this->basket->getBasketItemByPosition(3)->getArticleId(),
             $response->getBasket()->getBasketItemByPosition(3)->getArticleId()
         );
+
+        return $response->getBasketId();
+    }
+
+    /**
+     * @depends testOverwriteBasketByChangeAmounts
+     *
+     * @param string $basketId
+     *
+     * @return string
+     */
+    public function testOverwriteBasketByRemovingAPosition($basketId)
+    {
+        $request = new Request($this->auth);
+        $response = $request->retrieveBasket($basketId);
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_GETBASKET, $response->printMessage());
+
+        // remove the item on position 3.
+        $response->getBasket()->deleteBasketItemByPosition(3);
+
+        // set the basket in the request to the changed one.
+        $request->setBasket($response->getBasket());
+        $response = $request->overwriteBasket($response->getBasketId());
+
+        // confirm the request was successful.
+        $this->assertTrue($response->isSuccess());
+        $this->assertEquals(Response::RESULT_ACK, $response->getResult());
+        $this->assertEquals(Response::METHOD_OVERWRITEBASKET, $response->getMethod());
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_OVERWRITEBASKET, $response->printMessage());
+
+        // confirm that no basket was returned and the basket id is still the same.
+        $this->assertEquals($basketId, $response->getBasketId());
+        $this->assertNull($response->getBasket());
+
+        return $basketId;
+    }
+
+    /**
+     * @depends testOverwriteBasketByRemovingAPosition
+     *
+     * @param string $basketId
+     */
+    public function testOverwrittenBasketByRemovingAPositionComparison($basketId)
+    {
+        $request = new Request($this->auth);
+        $response = $request->retrieveBasket($basketId);
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_GETBASKET, $response->printMessage());
+
+        // compare the original basket with the overwritten one (which we just loaded again via api call)
+        $this->assertEquals(2, $response->getBasket()->getItemCount());
     }
 
     /**

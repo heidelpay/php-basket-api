@@ -2,7 +2,7 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use Heidelpay\PhpBasketApi\Exception\BasketItemException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 
 /**
  * Item object for heidelpay api
@@ -273,13 +273,13 @@ class BasketItem extends AbstractObject
      *
      * @param int $position
      *
-     * @throws BasketItemException
+     * @throws InvalidBasketitemPositionException
      * @return $this
      */
     public function setPosition($position)
     {
         if ($position <= 0) {
-            throw new BasketItemException('BasketItem position cannot be equal or less than 0.');
+            throw new InvalidBasketitemPositionException('BasketItem position cannot be equal or less than 0.');
         }
 
         $this->position = $position;
@@ -653,6 +653,22 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Magic getter for properties
+     *
+     * @param $field
+     *
+     * @return null
+     */
+    public function __get($field)
+    {
+        if (property_exists($this, $field)) {
+            return $this->$field;
+        }
+
+        return null;
+    }
+
+    /**
      * Magic setter in favor of parsing.
      *
      * @param $field
@@ -663,5 +679,20 @@ class BasketItem extends AbstractObject
         if (property_exists($this, $field)) {
             $this->$field = $value;
         }
+    }
+
+    /**
+     * Isset implementation for the __set method
+     *
+     * @param $field
+     * @return bool
+     */
+    public function __isset($field)
+    {
+        if (!property_exists($this, $field)) {
+            return false;
+        }
+
+        return true;
     }
 }

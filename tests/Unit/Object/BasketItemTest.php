@@ -2,7 +2,7 @@
 
 namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
-use Heidelpay\PhpBasketApi\Exception\BasketItemException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +50,7 @@ class BasketItemTest extends TestCase
         $this->assertEquals($position1, $this->basketItem->getPosition());
 
         // throw an exception, when position is <= 0
-        $this->expectException(BasketItemException::class);
+        $this->expectException(InvalidBasketitemPositionException::class);
         $this->basketItem->setPosition(0);
     }
 

@@ -3,6 +3,7 @@
 namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
 use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 use Heidelpay\PhpBasketApi\Object\Basket;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
@@ -88,15 +89,10 @@ class BasketTest extends TestCase
         $this->assertFalse($result, 'Item object has not been removed from basket');
         $this->assertNull($this->basket->getBasketItemByPosition(1));
 
-        $this->expectException(InvalidBasketitemIdException::class);
+        $this->expectException(InvalidBasketitemPositionException::class);
         $this->basket->getBasketItemByPosition(0);
-
-        //$this->expectException(InvalidBasketitemIdException::class);
         $this->basket->deleteBasketItemByPosition(0);
-
-        //$this->expectException(InvalidBasketitemIdException::class);
         $this->basket->deleteBasketItemByPosition(42);
-
         $this->basket->deleteBasketItemByPosition(-1);
     }
 
