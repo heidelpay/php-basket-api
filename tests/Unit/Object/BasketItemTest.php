@@ -377,6 +377,39 @@ class BasketItemTest extends TestCase
     }
 
     /**
+     * Unit test for magic getters and setters
+     */
+    public function testMagicGetterCases()
+    {
+        $testValue = 'Test';
+
+        // ensure that the property is null.
+        $this->assertNull($this->basketItem->type);
+
+        // set test property and access it.
+        $this->basketItem->setType($testValue);
+        $this->assertEquals($testValue, $this->basketItem->type);
+
+        // access invalid property and get null.
+        $this->assertNull($this->basketItem->invalidProperty);
+    }
+
+    /**
+     * Test the implementation of the __isset magic method
+     */
+    public function testIssetMagicMethodCases()
+    {
+        // amountNet is present, but null
+        $this->assertFalse(isset($this->basketItem->amountNet));
+
+        $this->assertFalse(isset($this->basketItem->notExistingProperty));
+
+        // set the amountNet to ensure isset will return true now.
+        $this->basketItem->setAmountNet(100);
+        $this->assertTrue(isset($this->basketItem->amountNet));
+    }
+
+    /**
      * Unit test for JSON
      */
     public function testJsonSerializable()

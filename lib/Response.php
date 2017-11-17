@@ -236,10 +236,10 @@ class Response extends AbstractObject
         }
 
         if ($this->isSuccess()) {
-            return sprintf('%s - %s Request SUCCESS. %s', self::APP_NAME, $this->method, join(', ', $messages));
+            return sprintf('%s - %s Request SUCCESS. %s', self::APP_NAME, $this->method, implode(', ', $messages));
         }
 
-        return sprintf('%s - %s Request FAILURE. %s', self::APP_NAME, $this->method, join(', ', $messages));
+        return sprintf('%s - %s Request FAILURE. %s', self::APP_NAME, $this->method, implode(', ', $messages));
     }
 
     /**
@@ -293,7 +293,7 @@ class Response extends AbstractObject
                     }
 
                     try {
-                        $basket->addBasketItem($item, $item->getPosition(), false);
+                        $basket->addBasketItem($item, $item->getPosition());
                     } catch (InvalidBasketitemPositionException $e) {
                         throw new BasketException('Could not add BasketItem to Basket during parsing!');
                     }
