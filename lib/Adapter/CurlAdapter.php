@@ -50,7 +50,7 @@ class CurlAdapter implements AdapterInterface
         curl_setopt($curlRequest, CURLOPT_SSL_VERIFYPEER, 1);
         curl_setopt($curlRequest, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($curlRequest, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-        curl_setopt($curlRequest, CURLOPT_USERAGENT, "PhpBasketApi");
+        curl_setopt($curlRequest, CURLOPT_USERAGENT, 'PhpBasketApi');
 
         $response = curl_exec($curlRequest);
         $error = curl_error($curlRequest);

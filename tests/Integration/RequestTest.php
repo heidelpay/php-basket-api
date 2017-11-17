@@ -118,9 +118,9 @@ class RequestTest extends TestCase
         $basketItemThree->setAmountVat(120);
         $basketItemThree->setAmountDiscount(0);
 
-        $this->basket->addBasketItem($basketItemOne);
-        $this->basket->addBasketItem($basketItemTwo);
-        $this->basket->addBasketItem($basketItemThree);
+        $this->basket->addBasketItem($basketItemOne, null, false);
+        $this->basket->addBasketItem($basketItemTwo, null, false);
+        $this->basket->addBasketItem($basketItemThree, null, false);
     }
 
     /**
@@ -137,9 +137,9 @@ class RequestTest extends TestCase
         $this->assertContains('SUCCESS', $response->printMessage());
         $this->assertContains(Response::METHOD_ADDNEWBASKET, $response->printMessage());
 
-        $this->assertNotEquals(null, $response->getBasketId(), 'BasketId is null.');
-        $this->assertNotEquals(null, $response->getResult(), 'Result is null.');
-        $this->assertNotEquals(null, $response->getMethod(), 'Method is null.');
+        $this->assertNotNull($response->getBasketId(), 'BasketId is null.');
+        $this->assertNotNull($response->getResult(), 'Result is null.');
+        $this->assertNotNull($response->getMethod(), 'Method is null.');
         $this->assertTrue($response->isSuccess(), 'Response is not success.');
         $this->assertFalse($response->isFailure(), 'Response is failure.');
 

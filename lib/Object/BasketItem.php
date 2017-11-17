@@ -689,10 +689,6 @@ class BasketItem extends AbstractObject
      */
     public function __isset($field)
     {
-        if (!property_exists($this, $field)) {
-            return false;
-        }
-
-        return true;
+        return !(!property_exists($this, $field) || $this->$field === null);
     }
 }
