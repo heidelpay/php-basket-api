@@ -3,6 +3,7 @@
 namespace Heidelpay\PhpBasketApi;
 
 use Heidelpay\PhpBasketApi\Exception\BasketException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 use Heidelpay\PhpBasketApi\Object\AbstractObject;
 use Heidelpay\PhpBasketApi\Object\Basket;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
@@ -235,10 +236,10 @@ class Response extends AbstractObject
         }
 
         if ($this->isSuccess()) {
-            return sprintf('%s - %s Request SUCCESS. %s', self::APP_NAME, $this->method, join(', ', $messages));
+            return sprintf('%s - %s Request SUCCESS. %s', self::APP_NAME, $this->method, implode(', ', $messages));
         }
 
-        return sprintf('%s - %s Request FAILURE. %s', self::APP_NAME, $this->method, join(', ', $messages));
+        return sprintf('%s - %s Request FAILURE. %s', self::APP_NAME, $this->method, implode(', ', $messages));
     }
 
     /**
@@ -283,6 +284,7 @@ class Response extends AbstractObject
 
             // iterate through the basket items.
             if (isset($obj->basket->basketItems) && !empty($obj->basket->basketItems)) {
+                sort($obj->basket->basketItems);
                 foreach ($obj->basket->basketItems as $basketItem) {
                     $item = new BasketItem();
 
@@ -290,7 +292,11 @@ class Response extends AbstractObject
                         $item->$class_var = $value;
                     }
 
-                    $basket->addBasketItem($item);
+                    try {
+                        $basket->addBasketItem($item, $item->getPosition());
+                    } catch (InvalidBasketitemPositionException $e) {
+                        throw new BasketException('Could not add BasketItem to Basket during parsing!');
+                    }
                 }
             }
 

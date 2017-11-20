@@ -3,6 +3,7 @@
 namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
 use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemIdException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 use Heidelpay\PhpBasketApi\Object\Basket;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
@@ -54,50 +55,6 @@ class BasketTest extends TestCase
 
         $this->basket->setAmountTotalVat($value);
         $this->assertSame($value, $this->basket->getAmountTotalVat());
-    }
-
-    /**
-     * test for adding and removing BasketItems
-     */
-    public function testAddAndDeleteBasketItems()
-    {
-        $item = new BasketItem();
-        $item2 = new BasketItem();
-        $item3 = new BasketItem();
-
-        $this->basket->addBasketItem($item);
-        $this->basket->addBasketItem($item2);
-        $this->basket->addBasketItem($item3);
-
-        $this->assertEquals(3, $this->basket->getItemCount());
-
-        // test for single item object
-        $this->assertNotNull($this->basket->getBasketItemByPosition(1), 'Object does not contain an item');
-
-        // test update item object by id
-        $title = 'fish and chips';
-        $this->basket->updateBasketItem($item->setTitle($title), 1);
-        $this->assertEquals($title, $this->basket->getBasketItemByPosition(1)->getTitle());
-        $this->assertEquals($title, $this->basket->getBasketItems()[0]->getTitle());
-
-        // test delete item object form basket
-        $this->basket->deleteBasketItemByPosition(1);
-        $this->assertNotNull($this->basket->getBasketItemByPosition(2), 'More then one item has been deleted');
-
-        $result = $this->basket->getBasketItemByPosition(1) ? true : false;
-        $this->assertFalse($result, 'Item object has not been removed from basket');
-        $this->assertNull($this->basket->getBasketItemByPosition(1));
-
-        $this->expectException(InvalidBasketitemIdException::class);
-        $this->basket->getBasketItemByPosition(0);
-
-        //$this->expectException(InvalidBasketitemIdException::class);
-        $this->basket->deleteBasketItemByPosition(0);
-
-        //$this->expectException(InvalidBasketitemIdException::class);
-        $this->basket->deleteBasketItemByPosition(42);
-
-        $this->basket->deleteBasketItemByPosition(-1);
     }
 
     /**
@@ -200,21 +157,6 @@ class BasketTest extends TestCase
     }
 
     /**
-     * Unit test for magic getters and setters
-     */
-    public function testMagicGetter()
-    {
-        $testValue = 'Test';
-
-        // set test property and access it.
-        $this->basket->setNote($testValue);
-        $this->assertEquals($testValue, $this->basket->note);
-
-        // access invalid property and get null.
-        $this->assertNull($this->basket->test);
-    }
-
-    /**
      * Unit test for JSON
      */
     public function testJsonSerializable()
@@ -231,5 +173,240 @@ class BasketTest extends TestCase
         $this->assertArrayHasKey('basketItems', $this->basket->jsonSerialize());
 
         $this->assertNotEmpty($this->basket->toJson());
+    }
+
+    /**
+     * test for adding and removing BasketItems
+     */
+    public function testAddAndDeleteBasketItems()
+    {
+        $item = new BasketItem();
+        $item2 = new BasketItem();
+        $item3 = new BasketItem();
+
+        $this->basket->addBasketItem($item);
+        $this->basket->addBasketItem($item2);
+        $this->basket->addBasketItem($item3);
+
+        $this->assertEquals(3, $this->basket->getItemCount());
+
+        // test for single item object
+        $this->assertNotNull($this->basket->getBasketItemByPosition(1), 'Object does not contain an item');
+
+        // test update item object by id
+        $title = 'fish and chips';
+        $this->basket->updateBasketItem($item->setTitle($title), 1);
+        $this->assertEquals($title, $this->basket->getBasketItemByPosition(1)->getTitle());
+        $this->assertEquals($title, $this->basket->getBasketItems()[0]->getTitle());
+
+        // test delete item object form basket
+        $this->basket->deleteBasketItemByPosition(1);
+        $this->assertNotNull($this->basket->getBasketItemByPosition(2), 'More then one item has been deleted');
+
+        $result = $this->basket->getBasketItemByPosition(1) ? true : false;
+        $this->assertFalse($result, 'Item object has not been removed from basket');
+        $this->assertNull($this->basket->getBasketItemByPosition(1));
+
+        $this->expectException(InvalidBasketitemPositionException::class);
+        $this->basket->getBasketItemByPosition(0);
+        $this->basket->deleteBasketItemByPosition(-1);
+        $this->basket->deleteBasketItemByPosition(0);
+        $this->basket->deleteBasketItemByPosition(42);
+    }
+
+    public function testAddItemsToBasketWithAutoUpdate()
+    {
+        $amountNet = 8100;
+        $amountVat = 1900;
+        $amountDiscount = 500;
+
+        $item = new BasketItem();
+        $item->setAmountNet($amountNet);
+        $item->setAmountVat($amountVat);
+        $item->setAmountDiscount($amountDiscount);
+
+        // add the BasketItem with $position = null (so the item's position in the Basket will
+        // be determined in the method) and $autoUpdate = true (so the Basket's amounts
+        // will be updated according to the BasketItem's amounts
+        $this->basket->addBasketItem($item, null, true);
+        $this->assertEquals($amountNet, $this->basket->getAmountTotalNet());
+        $this->assertEquals($amountVat, $this->basket->getAmountTotalVat());
+        $this->assertEquals($amountDiscount, $this->basket->getAmountTotalDiscount());
+    }
+
+    /**
+     * Test for the case when a BasketItem is added, amounts are changed and updated in the Basket.
+     */
+    public function testUpdateBasketWithoutAutoUpdate()
+    {
+        $firstAmountNet = 190;
+        $firstAmountGross = 1000;
+
+        $secondAmountNet = 380;
+        $secondAmountGross = 2000;
+
+        $item = new BasketItem();
+        $item->setAmountNet($firstAmountNet);
+        $item->setAmountGross($firstAmountGross);
+        $item->setPosition(1);
+
+        $this->basket->addBasketItem($item);
+
+        $this->assertEquals($firstAmountGross, $this->basket->getBasketItemByPosition(1)->getAmountGross());
+        $this->assertEquals($firstAmountNet, $this->basket->getBasketItemByPosition(1)->getAmountNet());
+
+        // autoUpdate in addBasketItem is false, so we expect the basketTotalNet amount to be still 0.
+        $this->assertEquals(0, $this->basket->getAmountTotalNet());
+
+        $item->setAmountGross($secondAmountGross);
+        $item->setAmountNet($secondAmountNet);
+
+        // update the BasketItem ($position does not need to be provided, since $item already has a position of 1)
+        // and verify that the BasketItem in the Basket has been updated.
+        $this->basket->updateBasketItem($item);
+        $this->assertEquals($secondAmountGross, $this->basket->getBasketItemByPosition(1)->getAmountGross());
+        $this->assertEquals($secondAmountNet, $this->basket->getBasketItemByPosition(1)->getAmountNet());
+
+        // autoUpdate in updateBasketItem is false, so we expect the basketTotalNet amount to be still 0.
+        $this->assertEquals(0, $this->basket->getAmountTotalNet());
+
+        // throw an exception when an item with no position reference is tried to be updated in the basket.
+        $this->expectException(InvalidBasketitemPositionException::class);
+        $item3 = new BasketItem();
+        $this->basket->updateBasketItem($item3);
+    }
+
+    public function testUpdateBasketWithAutoUpdate()
+    {
+        $amountNet = 8100;
+        $amountVat = 1900;
+        $amountDiscount = 500;
+
+        $updatedAmountNet = 4000;
+        $updatedAmountVat = 950;
+        $updatedAmountDiscount = 250;
+
+        $moreUpdatedAmountNet = 5000;
+        $moreUpdatedAmountVat = 1250;
+        $moreUpdatedAmountDiscount = 300;
+
+        $item = new BasketItem();
+        $item->setAmountNet($amountNet);
+        $item->setAmountVat($amountVat);
+        $item->setAmountDiscount($amountDiscount);
+
+        // add the BasketItem with $position = null (so the item's position in the Basket will
+        // be determined in the method) and $autoUpdate = true (so the Basket's amounts
+        // will be updated according to the BasketItem's amounts
+        $this->basket->addBasketItem($item, null, true);
+        $this->assertEquals($amountNet, $this->basket->getAmountTotalNet());
+        $this->assertEquals($amountVat, $this->basket->getAmountTotalVat());
+        $this->assertEquals($amountDiscount, $this->basket->getAmountTotalDiscount());
+
+        // decrease the amounts and update the item in the Basket
+        $item->setAmountNet($updatedAmountNet);
+        $item->setAmountVat($updatedAmountVat);
+        $item->setAmountDiscount($updatedAmountDiscount);
+
+        // update the BasketItem (tests decreasing of all amounts)
+        $this->basket->updateBasketItem($item, 1, true);
+        $this->assertEquals($updatedAmountNet, $this->basket->getAmountTotalNet());
+        $this->assertEquals($updatedAmountVat, $this->basket->getAmountTotalVat());
+        $this->assertEquals($updatedAmountDiscount, $this->basket->getAmountTotalDiscount());
+
+        $item->setAmountNet($moreUpdatedAmountNet);
+        $item->setAmountVat($moreUpdatedAmountVat);
+        $item->setAmountDiscount($moreUpdatedAmountDiscount);
+
+        $this->basket->updateBasketItem($item, 1, true);
+
+        $this->assertEquals($moreUpdatedAmountNet, $this->basket->getAmountTotalNet());
+        $this->assertEquals($moreUpdatedAmountVat, $this->basket->getAmountTotalVat());
+        $this->assertEquals($moreUpdatedAmountDiscount, $this->basket->getAmountTotalDiscount());
+    }
+
+    /**
+     * Unit test for magic getters and setters
+     */
+    public function testMagicGetterCases()
+    {
+        $testValue = 'Test';
+
+        // ensure that the property is null.
+        $this->assertNull($this->basket->note);
+
+        // set test property and access it.
+        $this->basket->setNote($testValue);
+        $this->assertEquals($testValue, $this->basket->note);
+
+        // access invalid property and get null.
+        $this->assertNull($this->basket->test);
+    }
+
+    /**
+     * Test the implementation of the __isset magic method.
+     */
+    public function testIssetMagicMethodCases()
+    {
+        // amountTotalNet is present, but null
+        $this->assertFalse(isset($this->basket->amountTotalNet));
+
+        // notExisting is not a property of Basket
+        $this->assertFalse(isset($this->basket->notExisting));
+
+        // set the amountTotalNet to ensure isset will return true now.
+        $this->basket->setAmountTotalNet(100);
+        $this->assertTrue(isset($this->basket->amountTotalNet));
+    }
+
+    /**
+     * Try to update a basket item on a position where an item is not
+     * existing (yet), so we expect an exception to be thrown.
+     */
+    public function testThrowExceptionWhenUpdatingANonExistingBasketitem()
+    {
+        $item = new BasketItem();
+        $item->setTitle('Fish & Chips');
+        $item->setDescription('Tasty!');
+
+        $this->expectException(InvalidBasketitemPositionException::class);
+        $this->basket->updateBasketItem($item, 2);
+    }
+
+    /**
+     * When trying to delete a BasketItem with a position
+     * of 0 or less, we expect an exception to be thrown.
+     */
+    public function testThrowExceptionWhenDeletingAPositionBelowOrEqualsZero()
+    {
+        $this->expectException(InvalidBasketitemPositionException::class);
+        $this->expectExceptionMessage('BasketItem position cannot be equal or less than 0.');
+        $this->basket->deleteBasketItemByPosition(0);
+    }
+
+    /**
+     * When trying to delete a BasketItem with a position
+     * of 0 or less, we expect an exception to be thrown.
+     */
+    public function testThrowExceptionWhenDeletingAPositionWithoutAnItem()
+    {
+        $positionToBeDeleted = 1;
+
+        $this->expectException(InvalidBasketitemPositionException::class);
+        $this->expectExceptionMessage('Basket item on position ' . $positionToBeDeleted . ' does not exist.');
+        $this->basket->deleteBasketItemByPosition($positionToBeDeleted);
+    }
+
+    /**
+     * When trying to delete a BasketItem by a given referenceId,
+     * we expect an exception to be thrown.
+     */
+    public function testThrowExceptionWhenDeletingANonExistingReferenceIdBasketItem()
+    {
+        $referenceIdToBeDeleted = 'ABC-123';
+
+        $this->expectException(InvalidBasketitemIdException::class);
+        $this->expectExceptionMessage('Basket item with refereceId ' . $referenceIdToBeDeleted . ' does not exist.');
+        $this->basket->deleteBasketItemByReferenceId($referenceIdToBeDeleted);
     }
 }

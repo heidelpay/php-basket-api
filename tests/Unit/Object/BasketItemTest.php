@@ -2,7 +2,7 @@
 
 namespace Heidelpay\Tests\PhpBasketApi\Unit\Object;
 
-use Heidelpay\PhpBasketApi\Exception\BasketItemException;
+use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 use Heidelpay\PhpBasketApi\Object\BasketItem;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +50,7 @@ class BasketItemTest extends TestCase
         $this->assertEquals($position1, $this->basketItem->getPosition());
 
         // throw an exception, when position is <= 0
-        $this->expectException(BasketItemException::class);
+        $this->expectException(InvalidBasketitemPositionException::class);
         $this->basketItem->setPosition(0);
     }
 
@@ -374,6 +374,39 @@ class BasketItemTest extends TestCase
 
         $this->basketItem->setArticleCategory($articleCategory);
         $this->assertEquals($articleCategory, $this->basketItem->getArticleCategory());
+    }
+
+    /**
+     * Unit test for magic getters and setters
+     */
+    public function testMagicGetterCases()
+    {
+        $testValue = 'Test';
+
+        // ensure that the property is null.
+        $this->assertNull($this->basketItem->type);
+
+        // set test property and access it.
+        $this->basketItem->setType($testValue);
+        $this->assertEquals($testValue, $this->basketItem->type);
+
+        // access invalid property and get null.
+        $this->assertNull($this->basketItem->invalidProperty);
+    }
+
+    /**
+     * Test the implementation of the __isset magic method
+     */
+    public function testIssetMagicMethodCases()
+    {
+        // amountNet is present, but null
+        $this->assertFalse(isset($this->basketItem->amountNet));
+
+        $this->assertFalse(isset($this->basketItem->notExistingProperty));
+
+        // set the amountNet to ensure isset will return true now.
+        $this->basketItem->setAmountNet(100);
+        $this->assertTrue(isset($this->basketItem->amountNet));
     }
 
     /**
