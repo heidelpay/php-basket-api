@@ -42,9 +42,11 @@ class Authentication extends AbstractObject
     /**
      * Authentication constructor.
      *
-     * @param string $login
-     * @param string $password
-     * @param string $senderId
+     * @param string|null $login
+     * @param string|null $password
+     * @param string|null $senderId
+     *
+     * @throws ParameterOverflowException
      */
     public function __construct($login = null, $password = null, $senderId = null)
     {
@@ -100,7 +102,8 @@ class Authentication extends AbstractObject
      *
      * @param string
      *
-     * @throws Exception
+     * @throws ParameterOverflowException
+     *
      * @return Authentication
      */
     public function setSender($sender)

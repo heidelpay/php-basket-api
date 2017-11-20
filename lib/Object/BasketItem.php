@@ -95,42 +95,49 @@ class BasketItem extends AbstractObject
 
     /**
      * @var string
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $channel;
 
     /**
      * @var string
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $transactionId;
 
     /**
      * @var string
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $usage;
 
     /**
      * @var int
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $commissionRate;
 
     /**
      * @var int
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $voucherAmount;
 
     /**
      * @var string
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $voucherId;
 
     /**
      * @var string
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $articleCategory;
@@ -685,6 +692,7 @@ class BasketItem extends AbstractObject
      * Isset implementation for the __set method
      *
      * @param $field
+     *
      * @return bool
      */
     public function __isset($field)

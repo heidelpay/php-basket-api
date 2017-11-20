@@ -9,14 +9,14 @@ use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
  * heidelpay Basket
  * Implementation of the Basket API object
  *
- * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
+ * @license   Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/php-basket-api
+ * @link      https://dev.heidelpay.de/php-basket-api
  *
- * @author Jens Richter
+ * @author    Jens Richter
  *
- * @package heidelpay\php-basket-api\object
+ * @package   heidelpay\php-basket-api\object
  */
 class Basket extends AbstractObject
 {
@@ -239,6 +239,7 @@ class Basket extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return int
      */
     public function getVoucherAmount()
@@ -261,6 +262,7 @@ class Basket extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return string
      */
     public function getVoucherId()
@@ -348,11 +350,12 @@ class Basket extends AbstractObject
     /**
      * Add item to basket object
      *
-     * @param BasketItem $item The BasketItem to be added
-     * @param int|null   $position The position where the item should be placed (optional)
+     * @param BasketItem $item       The BasketItem to be added
+     * @param int|null   $position   The position where the item should be placed (optional)
      * @param bool       $autoUpdate If the BasketItem amounts can be added to the Basket automatically
      *
      * @throws InvalidBasketitemPositionException
+     *
      * @return $this
      */
     public function addBasketItem(BasketItem $item, $position = null, $autoUpdate = false)
@@ -379,8 +382,8 @@ class Basket extends AbstractObject
     /**
      * Updates the object at the given index.
      *
-     * @param BasketItem $item the item to be set
-     * @param int        $position The position of the BasketItem
+     * @param BasketItem $item       the item to be set
+     * @param int        $position   The position of the BasketItem
      * @param bool       $autoUpdate If Basket amounts should be updated automatically
      *
      * @throws InvalidBasketitemPositionException
@@ -412,7 +415,7 @@ class Basket extends AbstractObject
     /**
      * Removes an item of the basket at the given position.
      *
-     * @param int $position the basket index of the item
+     * @param int  $position   the basket index of the item
      * @param bool $autoUpdate decrease Basket amounts by BasketItem amounts
      *
      * @throws InvalidBasketitemPositionException
@@ -440,7 +443,7 @@ class Basket extends AbstractObject
      * Deletes a BasketItem by it's reference id.
      *
      * @param string $referenceId
-     * @param bool $autoUpdate decrease Basket amounts by BasketItem amounts
+     * @param bool   $autoUpdate decrease Basket amounts by BasketItem amounts
      *
      * @return $this
      *
@@ -483,7 +486,7 @@ class Basket extends AbstractObject
     /**
      * Determines the position of the BasketItem in the BasketItem array.
      *
-     * @param BasketItem $item The BasketItem containing the changes
+     * @param BasketItem $item     The BasketItem containing the changes
      * @param int|null   $position The position where a BasketItem should be updated
      * @param bool       $doUpdate If the position is needed for an update
      *
@@ -659,6 +662,7 @@ class Basket extends AbstractObject
      * Isset implementation for the __set method
      *
      * @param $field
+     *
      * @return bool
      */
     public function __isset($field)
