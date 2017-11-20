@@ -28,7 +28,7 @@ You can find a copy of this license in [LICENSE.txt](LICENSE.txt).
 
 ## Documentation
 
-Please visit https://dev.heidelpay.de/PhpBasketApi/ for the developer documentation.
+Please visit https://dev.heidelpay.com/PhpBasketApi/ for the developer documentation.
 
 ### UnitTest
 
