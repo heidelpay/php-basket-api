@@ -69,12 +69,14 @@ class Basket extends AbstractObject
 
     /**
      * @var int
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $voucherAmount;
 
     /**
      * @var string
+     *
      * @todo yet undocumented in the Integration_Guide (v1.1)!
      */
     protected $voucherId;
@@ -418,8 +420,8 @@ class Basket extends AbstractObject
     /**
      * Removes an item of the basket at the given position.
      *
-     * @param int  $position    the basket index of the item
-     * @param bool $autoUpdate  decrease Basket amounts by BasketItem amounts
+     * @param int  $position   the basket index of the item
+     * @param bool $autoUpdate decrease Basket amounts by BasketItem amounts
      *
      * @throws InvalidBasketitemPositionException
      *
@@ -447,7 +449,7 @@ class Basket extends AbstractObject
      * Deletes a BasketItem by it's reference id.
      *
      * @param string $referenceId
-     * @param bool   $autoUpdate decrease Basket amounts by BasketItem amounts
+     * @param bool   $autoUpdate    decrease Basket amounts by BasketItem amounts
      *
      * @return $this
      *

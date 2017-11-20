@@ -2,7 +2,6 @@
 
 namespace Heidelpay\PhpBasketApi\Object;
 
-use Exception;
 use Heidelpay\PhpBasketApi\Exception\ParameterOverflowException;
 
 /**
