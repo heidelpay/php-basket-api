@@ -1,2 +1,2 @@
-engines:
-  base_sub_dir: lib
+exclude_paths:
+  - tests/**
