@@ -42,9 +42,9 @@ class Authentication extends AbstractObject
     /**
      * Authentication constructor.
      *
-     * @param string|null $login
-     * @param string|null $password
-     * @param string|null $senderId
+     * @param string $login
+     * @param string $password
+     * @param string $senderId
      *
      * @throws ParameterOverflowException
      */
@@ -58,7 +58,7 @@ class Authentication extends AbstractObject
     /**
      * Sets the user login
      *
-     * @param string
+     * @param string $login
      *
      * @return Authentication
      */
@@ -100,7 +100,7 @@ class Authentication extends AbstractObject
     /**
      * Sets the Sender ID.
      *
-     * @param string
+     * @param string $sender
      *
      * @throws ParameterOverflowException
      *

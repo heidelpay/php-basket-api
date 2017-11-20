@@ -299,6 +299,7 @@ class Basket extends AbstractObject
      * @param int $position
      *
      * @throws InvalidBasketitemPositionException
+     *
      * @return BasketItem|null
      */
     public function getBasketItemByPosition($position)
@@ -336,6 +337,7 @@ class Basket extends AbstractObject
      * @param $position
      *
      * @throws InvalidBasketitemPositionException
+     *
      * @return BasketItem
      */
     private function getBasketItemByRealPosition($position)
@@ -387,6 +389,7 @@ class Basket extends AbstractObject
      * @param bool       $autoUpdate If Basket amounts should be updated automatically
      *
      * @throws InvalidBasketitemPositionException
+     *
      * @return $this
      */
     public function updateBasketItem(BasketItem $item, $position = null, $autoUpdate = false)
@@ -415,10 +418,11 @@ class Basket extends AbstractObject
     /**
      * Removes an item of the basket at the given position.
      *
-     * @param int  $position   the basket index of the item
-     * @param bool $autoUpdate decrease Basket amounts by BasketItem amounts
+     * @param int  $position    the basket index of the item
+     * @param bool $autoUpdate  decrease Basket amounts by BasketItem amounts
      *
      * @throws InvalidBasketitemPositionException
+     *
      * @return $this
      */
     public function deleteBasketItemByPosition($position, $autoUpdate = true)

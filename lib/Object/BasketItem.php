@@ -281,6 +281,7 @@ class BasketItem extends AbstractObject
      * @param int $position
      *
      * @throws InvalidBasketitemPositionException
+     *
      * @return $this
      */
     public function setPosition($position)
@@ -480,6 +481,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return string
      */
     public function getChannel()
@@ -502,6 +504,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return string
      */
     public function getTransactionId()
@@ -524,6 +527,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return string
      */
     public function getUsage()
@@ -546,6 +550,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return int
      */
     public function getCommissionRate()
@@ -568,6 +573,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return int
      */
     public function getVoucherAmount()
@@ -590,6 +596,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     *
      * @return string
      */
     public function getVoucherId()
