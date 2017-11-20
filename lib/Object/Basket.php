@@ -449,7 +449,7 @@ class Basket extends AbstractObject
      * Deletes a BasketItem by it's reference id.
      *
      * @param string $referenceId
-     * @param bool   $autoUpdate    decrease Basket amounts by BasketItem amounts
+     * @param bool   $autoUpdate  decrease Basket amounts by BasketItem amounts
      *
      * @return $this
      *
