@@ -1,6 +1,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/13dd225543524c93b2a9400e4b343fe1)](https://www.codacy.com/app/heidelpay/php-basket-api)
 [![PHP 5.6](https://img.shields.io/badge/php-5.6-blue.svg)](http://www.php.net)
 [![PHP 7.0](https://img.shields.io/badge/php-7.0-blue.svg)](http://www.php.net)
+[![PHP 7.1](https://img.shields.io/badge/php-7.1-blue.svg)](http://www.php.net)
 
 ![Logo](https://dev.heidelpay.de/devHeidelpay_400_180.jpg)
 
@@ -13,7 +14,7 @@ This is the php basket api for heidelpay. The library will help you to easily in
 
 ### SYSTEM REQUIREMENTS
 
-php-api requires PHP 5.6 or higher; we recommend using the
+php-basket-api requires PHP 5.6 or higher; we recommend using the
 latest stable PHP version whenever possible.
 
 ## SECURITY ADVICE
@@ -27,7 +28,7 @@ You can find a copy of this license in [LICENSE.txt](LICENSE.txt).
 
 ## Documentation
 
-Please visit https://dev.heidelpay.de/PhpApi/ for the developer documentation.
+Please visit https://dev.heidelpay.de/PhpBasketApi/ for the developer documentation.
 
 ### UnitTest
 
