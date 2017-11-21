@@ -13,15 +13,16 @@ use Heidelpay\PhpBasketApi\Request;
  * create one based on a standard library like zend-http
  * or guzzlehttp.
  *
- * @license Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
  * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/PhpApi
+ * @link https://dev.heidelpay.com/php-basket-api
  *
- * @author Jens Richter
+ * @author Stephano Vogel
  *
- * @package heidelpay
+ * @package heidelpay\php-basket-api\exception
  */
+
 class CurlAdapter implements AdapterInterface
 {
     /**
