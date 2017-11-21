@@ -79,6 +79,7 @@ class Response extends AbstractObject
 
     /**
      * Response constructor.
+     *
      * The response should be in json format (as a string), so it can
      * be parsed correctly.
      *
@@ -251,13 +252,66 @@ class Response extends AbstractObject
      */
     private function parseResponse($response)
     {
-        $obj = json_decode($response);
-
+        /** @var \stdClass $obj */
         // if the json cannot be parsed, do nothing.
-        if ($obj === null) {
+        if (!$obj = json_decode($response)) {
             return;
         }
 
+        $this->setResponseParameters($obj);
+
+        if (isset($obj->basket)) {
+            // instanciate a new Basket
+            $basket = new Basket();
+
+            // go through all properties of the parsed object and
+            // set the Basket's properties by their values.
+            $this->setBasketProperties($basket, $obj);
+
+            // iterate through the basket items.
+            if (isset($obj->basket->basketItems) && !empty($obj->basket->basketItems)) {
+                sort($obj->basket->basketItems);
+                $this->setBasketItemProperties($basket, $obj->basket->basketItems);
+            }
+
+            $this->setBasket($basket);
+
+            if (isset($obj->basket->itemCount) && $this->basket->getItemCount() !== $obj->basket->itemCount) {
+                throw new BasketException(
+                    'Itemcount ' . $this->basket->getItemCount() . ' does not match ' . $obj->basket->itemCount . '!'
+                );
+            }
+        }
+
+        // iterate through all basket errors, create object instances
+        // of them and add them to the basketErrors array.
+        if (isset($obj->basketErrors) && is_array($obj->basketErrors)) {
+            $this->setBasketErrors($obj->basketErrors);
+        }
+    }
+
+    /**
+     * Returns if the provided BasketItem uses Marketplace properties (that are not null)
+     *
+     * @param BasketItem $basketItem
+     *
+     * @return bool
+     */
+    private function itemHasMarketplaceProperties(BasketItem $basketItem)
+    {
+        return $basketItem->getChannel() !== null
+            || $basketItem->getCommissionRate() !== null
+            || $basketItem->getTransactionId() !== null
+            || $basketItem->getUsage() !== null;
+    }
+
+    /**
+     * Sets response parameters (result, request method &basket id)
+     *
+     * @param \stdClass $obj
+     */
+    private function setResponseParameters(\stdClass $obj)
+    {
         if (isset($obj->result)) {
             $this->setResult($obj->result);
         }
@@ -269,61 +323,70 @@ class Response extends AbstractObject
         if (isset($obj->basketId)) {
             $this->setBasketId($obj->basketId);
         }
+    }
 
-        if (isset($obj->basket)) {
-            // instanciate a new Basket
-            $basket = new Basket();
+    /**
+     * Sets the BasketErrors for the Reponse instance.
+     *
+     * @param array $basketErrors
+     */
+    private function setBasketErrors($basketErrors)
+    {
+        foreach ($basketErrors as $basketError) {
+            $objErr = new BasketError();
 
-            // go through all properties of the parsed object and
-            // set the Basket's properties by their values.
-            foreach (get_object_vars($obj->basket) as $class_var => $value) {
-                if ($class_var !== 'basketItems') {
-                    $basket->$class_var = $value;
-                }
+            if (isset($basketError->code)) {
+                $objErr->setCode($basketError->code);
             }
 
-            // iterate through the basket items.
-            if (isset($obj->basket->basketItems) && !empty($obj->basket->basketItems)) {
-                sort($obj->basket->basketItems);
-                foreach ($obj->basket->basketItems as $basketItem) {
-                    $item = new BasketItem();
-
-                    foreach (get_object_vars($basketItem) as $class_var => $value) {
-                        $item->$class_var = $value;
-                    }
-
-                    try {
-                        $basket->addBasketItem($item, $item->getPosition());
-                    } catch (InvalidBasketitemPositionException $e) {
-                        throw new BasketException('Could not add BasketItem to Basket during parsing!');
-                    }
-                }
+            if (isset($basketError->message)) {
+                $objErr->setMessage($basketError->message);
             }
 
-            $this->setBasket($basket);
+            $this->addBasketError($objErr);
+        }
+    }
 
-            if (isset($obj->basket->itemCount) && $this->basket->getItemCount() != $obj->basket->itemCount) {
-                throw new BasketException(
-                    'Itemcount ' . $this->basket->getItemCount() . ' does not match ' . $obj->basket->itemCount . '!'
-                );
+    /**
+     * Sets the Basket's properties.
+     *
+     * @param Basket    $basket
+     * @param \stdClass $obj
+     */
+    private function setBasketProperties(Basket $basket, \stdClass $obj)
+    {
+        foreach (get_object_vars($obj->basket) as $class_var => $value) {
+            if ($class_var !== 'basketItems') {
+                $basket->$class_var = $value;
             }
         }
+    }
 
-        // iterate through all basket errors, create object instances
-        // of them and add them to the basketErrors array.
-        if (isset($obj->basketErrors) && is_array($obj->basketErrors)) {
-            foreach ($obj->basketErrors as $basketError) {
-                $objErr = new BasketError();
+    /**
+     * @param Basket $basket
+     * @param array  $basketItems
+     *
+     * @throws BasketException
+     */
+    private function setBasketItemProperties(Basket $basket, array $basketItems)
+    {
+        foreach ($basketItems as $basketItem) {
+            $item = new BasketItem();
 
-                if (isset($basketError->code)) {
-                    $objErr->setCode($basketError->code);
-                }
+            foreach (get_object_vars($basketItem) as $class_var => $value) {
+                $item->$class_var = $value;
+            }
 
-                if (isset($basketError->message)) {
-                    $objErr->setMessage($basketError->message);
-                }
+            // if marketplace parameters are provided, set the BasketItem's
+            // isMarketplaceItem property to 'true'.
+            if ($this->itemHasMarketplaceProperties($item)) {
+                $item->setIsMarketplaceItem();
+            }
 
-                $this->addBasketError($objErr);
+            try {
+                $basket->addBasketItem($item, $item->getPosition());
+            } catch (InvalidBasketitemPositionException $e) {
+                throw new BasketException('Could not add BasketItem to Basket during parsing!');
             }
         }
     }

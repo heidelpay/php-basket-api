@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Stephano Vogel <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\tests\unit
+ * @package heidelpay\php-basket-api\tests\unit\object
  */
 class BasketItemTest extends TestCase
 {
@@ -133,23 +133,6 @@ class BasketItemTest extends TestCase
 
         $this->basketItem->setVat($vat7);
         $this->assertEquals($vat7, $this->basketItem->getVat());
-    }
-
-    /**
-     * Unit test for the vat rate
-     */
-    public function testVatRate()
-    {
-        $vatRate7 = 7.00;
-        $vatRate19 = 19.00;
-
-        $this->assertNull($this->basketItem->getVatRate());
-
-        $this->basketItem->setVatRate($vatRate7);
-        $this->assertEquals($vatRate7, $this->basketItem->getVatRate());
-
-        $this->basketItem->setVatRate($vatRate19);
-        $this->assertEquals($vatRate19, $this->basketItem->getVatRate());
     }
 
     /**
@@ -467,7 +450,6 @@ class BasketItemTest extends TestCase
         $this->assertArrayHasKey('commissionRate', $this->basketItem->jsonSerialize());
         $this->assertArrayHasKey('transactionId', $this->basketItem->jsonSerialize());
         $this->assertArrayHasKey('usage', $this->basketItem->jsonSerialize());
-        $this->assertArrayHasKey('vatRate', $this->basketItem->jsonSerialize());
 
         $this->assertNotEmpty($this->basketItem->toJson());
     }
