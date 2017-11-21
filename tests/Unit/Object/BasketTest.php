@@ -12,13 +12,13 @@ use PHPUnit\Framework\TestCase;
  * Tests for the PHP Basket API Object
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/php-basket-api
+ * @link http://dev.heidelpay.com/php-basket-api
  *
- * @author Jens Richter
+ * @author Jens Richter <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\tests\unit\basket
+ * @package heidelpay\php-basket-api\tests\unit
  */
 class BasketTest extends TestCase
 {

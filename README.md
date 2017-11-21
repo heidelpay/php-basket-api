@@ -8,12 +8,9 @@
 
 ![Logo](https://dev.heidelpay.de/devHeidelpay_400_180.jpg)
 
-#### Please note that this package is still considered as a beta and not meant to be used in production.
-
-
 # Welcome to the heidelpay basket api
 
-This is the php basket api for heidelpay. The library will help you to easily integrate heidelpay into your application.
+This is the PHP Basket API for heidelpay. The library will help you to easily integrate heidelpay into your application.
 
 ### SYSTEM REQUIREMENTS
 
@@ -31,8 +28,4 @@ You can find a copy of this license in [LICENSE.txt](LICENSE.txt).
 
 ## Documentation
 
-Please visit https://dev.heidelpay.com/PhpBasketApi/ for the developer documentation.
-
-### UnitTest
-
-This library comes with a set of unit tests. Please be so kind and do not run all tests on any build.
+Please visit http://dev.heidelpay.com/php-basket-api/ for the developer documentation.

@@ -7,87 +7,73 @@ use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 
 /**
  * heidelpay Basket
- * Implementation of the Basket API object
  *
- * @license   Use of this software requires acceptance of the License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * Basket object representation for the heidelpay Basket API
  *
- * @link      https://dev.heidelpay.de/php-basket-api
+ * @version 1.2
  *
- * @author    Jens Richter
+ * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @package   heidelpay\php-basket-api\object
+ * @link http://dev.heidelpay.com/php-basket-api
+ *
+ * @author Jens Richter <development@heidelpay.de>
+ * @author Stephano Vogel <development@heidelpay.de>
+ *
+ * @package heidelpay\php-basket-api\Object
  */
 class Basket extends AbstractObject
 {
     /**
-     * The total amount of the whole basket without Tax
-     *
-     * @var int $amountTotalNet
+     * @var int $amountTotalNet The total amount of the whole basket without Tax in the smallest unit of the currency
      */
     protected $amountTotalNet;
 
     /**
-     * @var int $amountTotalVat
+     * @var int $amountTotalVat The total amount of the Vat in smallest unit of the currency
      */
     protected $amountTotalVat;
 
     /**
-     * The total discount amount of the whole basket
-     *
-     * @var int $amountTotalDiscount
+     * @var int $amountTotalDiscount The total discount amount of the whole basket in the smallest unit of the currency
      */
     protected $amountTotalDiscount;
 
     /**
-     * Array of BasketItems
-     *
-     * @var BasketItem[]
+     * @var BasketItem[] $basketItems An array containing BasketItems
      */
     protected $basketItems = [];
 
     /**
-     * A basket or shop reference id sent from the shop backend
-     *
-     * @var string $basketReferenceId
+     * @var string $basketReferenceId A basket reference ID sent from the shop backend with a maximum length of 255
      */
     protected $basketReferenceId;
 
     /**
-     * The currency code in ISO 4217 format
-     *
-     * @var string $currencyCode
+     * @var string $currencyCode The currency code in ISO 4217 format with 3 characters
      */
     protected $currencyCode;
 
     /**
-     * A note sent from your application
-     *
-     * @var string $note
+     * @var string $note A note sent from the application with a maximum length of 3900 characters
      */
     protected $note;
 
     /**
-     * @var int
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var int $voucherAmount Voucher amount to be applied on a whole basket
      */
     protected $voucherAmount;
 
     /**
-     * @var string
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var string $voucherId A Voucher ID for a whole basket
      */
     protected $voucherId;
 
     /**
-     * Attributes that are mandatory for the Basket
-     *
-     * @var array
+     * @var array $mandatory An array of attributes that are mandatory for the Basket
      */
-    protected $mandatory = [
-        'amountTotal',
+    protected static $mandatory = [
+        'amountTotalNet',
         'currencyCode',
         'basketItems'
     ];
@@ -103,6 +89,8 @@ class Basket extends AbstractObject
     }
 
     /**
+     * Sets the total discount amount.
+     *
      * @param int $amountTotalDiscount
      *
      * @return $this
@@ -115,7 +103,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Amount total net getter
+     * Returns the total net amount.
      *
      * @return int
      */
@@ -125,7 +113,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Amount totla net setter
+     * Sets the total net amount.
      *
      * @param int $value
      *
@@ -138,7 +126,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Amount total vat getter
+     * Returns the total vat amount.
      *
      * @return int
      */
@@ -148,7 +136,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Amount total vat setter
+     * Sets the total vat amount.
      *
      * @param int $value
      *
@@ -161,7 +149,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Basket reference id getter
+     * Returns the Basket reference id.
      *
      * @return string basketReferenceId
      */
@@ -171,7 +159,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Basket reference id setter
+     * Sets the Basket reference id.
      *
      * @param string $value
      *
@@ -184,7 +172,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Currency code getter
+     * Returns the currency code.
      *
      * @return string currency code
      */
@@ -194,7 +182,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Currency code setter
+     * Sets the currency code.
      *
      * @param string $value
      *
@@ -207,7 +195,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Item count getter
+     * Returns the amount of BasketItems.
      *
      * @return int
      */
@@ -217,7 +205,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Basket note getter
+     * Returns the Basket note.
      *
      * @return string
      */
@@ -227,7 +215,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Basket note setter
+     * Sets the Basket note.
      *
      * @param string $value
      *
@@ -240,7 +228,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the voucher amount.
      *
      * @return int
      */
@@ -250,7 +238,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Sets the voucher amount.
      *
      * @param int $voucherAmount
      *
@@ -263,7 +251,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the voucher ID.
      *
      * @return string
      */
@@ -273,7 +261,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Sets the voucher ID.
      *
      * @param string $voucherId
      *
@@ -286,7 +274,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Returns all BasketItems
+     * Returns the array of all BasketItems.
      *
      * @return BasketItem[]
      */
@@ -296,7 +284,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Returns the basket item with the given position
+     * Returns a BasketItem at the given position.
      *
      * @param int $position
      *
@@ -336,7 +324,10 @@ class Basket extends AbstractObject
     }
 
     /**
-     * @param $position
+     * Returns the 'real' position of a BasketItem in the array, where 'real' means
+     * the array equivalent of a position (0 array => 1 Basket position)
+     *
+     * @param int $position
      *
      * @throws InvalidBasketitemPositionException
      *
@@ -352,7 +343,7 @@ class Basket extends AbstractObject
     }
 
     /**
-     * Add item to basket object
+     * Adds a BasketItem to the Basket.
      *
      * @param BasketItem $item       The BasketItem to be added
      * @param int|null   $position   The position where the item should be placed (optional)
@@ -472,17 +463,20 @@ class Basket extends AbstractObject
     }
 
     /**
+     * Returns an array that is used for the JSON representation when using json_encode or toJson().
+     *
      * @return array
      */
     public function jsonSerialize()
     {
-        // TODO: add voucherAmount and voucherId, if documented and ready to release.
         return [
             'amountTotalNet' => $this->amountTotalNet,
             'amountTotalVat' => $this->amountTotalVat,
             'amountTotalDiscount' => $this->amountTotalDiscount,
             'basketReferenceId' => $this->basketReferenceId,
             'currencyCode' => $this->currencyCode,
+            'voucherAmount' => $this->voucherAmount,
+            'voucherId' => $this->voucherId,
             'itemCount' => $this->getItemCount(),
             'note' => $this->note,
             'basketItems' => array_values($this->basketItems)
@@ -612,7 +606,7 @@ class Basket extends AbstractObject
 
     /**
      * Updates the Basket balances according to the differences
-     * of an updated BasketItem and it's predecessor
+     * of an updated BasketItem and it's predecessor.
      *
      * @param BasketItem $oldItem
      * @param BasketItem $newItem

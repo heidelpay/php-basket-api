@@ -5,31 +5,35 @@ namespace Heidelpay\PhpBasketApi;
 use Heidelpay\PhpBasketApi\Object\AbstractObject;
 
 /**
- * Respresentation of the heidelpay Basket API Error
+ * heidelpay BasketError
+ *
+ * BasketError object representation for the heidelpay Basket API
+ *
+ * @version 1.2
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/php-basket-api
+ * @link http://dev.heidelpay.com/php-basket-api
  *
- * @author Stephano Vogel
+ * @author Stephano Vogel <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\interaction\object
+ * @package heidelpay\php-basket-api\Interaction\Object
  */
 class BasketError extends AbstractObject
 {
     /**
-     * @var string error code
+     * @var string $code The Error code
      */
     protected $code;
 
     /**
-     * @var string error message
+     * @var string $message The Error message
      */
     protected $message;
 
     /**
-     * Returns the Errorcode
+     * Returns the Error code.
      *
      * @return string
      */
@@ -39,7 +43,7 @@ class BasketError extends AbstractObject
     }
 
     /**
-     * Returns the Error Message
+     * Returns the Error message.
      *
      * @return string
      */
@@ -51,7 +55,7 @@ class BasketError extends AbstractObject
     /**
      * Sets the error code.
      *
-     * @param $code
+     * @param string $code
      *
      * @return $this
      */
@@ -65,7 +69,7 @@ class BasketError extends AbstractObject
     /**
      * Sets the error code.
      *
-     * @param $message
+     * @param string $message
      *
      * @return $this
      */
@@ -77,6 +81,8 @@ class BasketError extends AbstractObject
     }
 
     /**
+     * Returns an array that is used for the JSON representation when using json_encode or toJson().
+     *
      * @return array
      */
     public function jsonSerialize()
@@ -88,7 +94,7 @@ class BasketError extends AbstractObject
     }
 
     /**
-     * Prints the error message that the BasketError instance represents.
+     * Prints the error message that the BasketError instance is representing.
      *
      * @return string
      */

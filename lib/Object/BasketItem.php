@@ -5,149 +5,144 @@ namespace Heidelpay\PhpBasketApi\Object;
 use Heidelpay\PhpBasketApi\Exception\InvalidBasketitemPositionException;
 
 /**
- * Item object for heidelpay api
+ * heidelpay BasketItem
+ *
+ * BasketItem object representation for the heidelpay Basket API
+ *
+ * @version 1.2
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/php-basket-api
+ * @link http://dev.heidelpay.com/php-basket-api
  *
- * @author Jens Richter
+ * @author Jens Richter <development@heidelpay.de>
+ * @author Stephano Vogel <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\object
+ * @package heidelpay\php-basket-api\Object
  */
 class BasketItem extends AbstractObject
 {
     /**
-     * @var int The position of the item in the basket (optional)
+     * @var int $position (optional) The position of the item in the Basket
      */
     protected $position;
 
     /**
-     * @var string The unique basketitem reference id (mandatory)
+     * @var string $basketItemReferenceId A unique reference id for the BasketItem with a maximum length of 255
      */
     protected $basketItemReferenceId;
 
     /**
-     * @var string The unit description of the item e.g. "Stk." (optional)
+     * @var string $unit (optional) The unit description of the item e.g. "Stk." with a maximum length of 255
      */
     protected $unit;
 
     /**
-     * @var int The quantity of the basket item (mandatory)
+     * @var int $quantity The quantity of the basket item (mandatory)
      */
     protected $quantity;
 
     /**
-     * @var int The discount amount for the basket item (optinal)
+     * @var int $amountDiscount The discount amount for the basket item (optinal)
      */
     protected $amountDiscount;
 
     /**
-     * @var int The vat value for the basket item in percent (conditional)
+     * @var int $vat The vat value for the basket item in percent (conditional)
      */
     protected $vat;
 
     /**
-     * @var int The gross amount (conditional), means amountNet + amountVat.
+     * @var float $vatRate The Vat rate with 2 decimal places (optional)
+     */
+    protected $vatRate;
+
+    /**
+     * @var int $amountGross The gross amount (conditional), means amountNet + amountVat.
      */
     protected $amountGross;
 
     /**
-     * @var int The vat amount, this value could be 0 if the vat value is 0 (conditional)
+     * @var int $amountVat The vat amount, this value could be 0 if the vat value is 0 (conditional)
      */
     protected $amountVat;
 
     /**
-     * @var int The amount per unit (mandatory)
+     * @var int $amountPerUnit The amount per unit (mandatory)
      */
     protected $amountPerUnit;
 
     /**
-     * @var int This value could be the same value as the gross amount if the vat value is 0
+     * @var int $amountNet This value could be the same value as the gross amount if the vat value is 0
      */
     protected $amountNet;
 
     /**
-     * @var string The shop article id for the basket item (optional)
+     * @var string $articleId (optional) The shop article id for the basket item with a maximum length of 255
      */
     protected $articleId;
 
     /**
-     * @var string The type of the basket item, e.g. "goods", "shipment", "voucher", "digital" or "physical" (optional)
+     * @var string $type (optional) The type of the basket item, e.g. "goods", "shipment", "voucher" or "digital" with
+     *                              a maximum length of 255
      */
     protected $type;
 
     /**
-     * @var string The title of the basket item (mandatory)
+     * @var string $title The title of the BasketItem with a maximum length of 255
      */
     protected $title;
 
     /**
-     * @var string A description for the basket item (optional)
+     * @var string $description (optional) A description for the basket item with a maximum length of 255
      */
     protected $description;
 
     /**
-     * @var string A image url e.g. https://placehold.it/32x32 (optional)
+     * @var string $imageUrl (optional) An image url e.g. https://placehold.it/32x32 with a maximum length of 255
      */
     protected $imageUrl;
 
     /**
-     * @var string
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var string $channel (cond. mandatory) The booking channel on which the item has to be booked (Marketplace)
      */
     protected $channel;
 
     /**
-     * @var string
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var string $transactionId (optional) A unique identifier with a maximum length of 255
      */
     protected $transactionId;
 
     /**
-     * @var string
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var string $usage (optional) A description for the BasketItem with a maximum length of 255
      */
     protected $usage;
 
     /**
-     * @var int
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var float $commissionRate (optional) The commission rate for the marketplace in % with 2 decimal places
      */
     protected $commissionRate;
 
     /**
-     * @var int
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var int $voucherAmount (optional) Voucher amount to be applied on the current BasketItem
      */
     protected $voucherAmount;
 
     /**
-     * @var string
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var string $voucherId (optional) Voucher ID for the current BasketItem with a maximum length of 255
      */
     protected $voucherId;
 
     /**
-     * @var string
-     *
-     * @todo yet undocumented in the Integration_Guide (v1.1)!
+     * @var string $articleCategory
      */
     protected $articleCategory;
 
     /**
-     * Attributes that are mandatory for every BasketItem
-     *
-     * @var array
+     * @var array $mandatory An array containing attributes that are mandatory for every BasketItem
      */
-    protected $mandatory = [
+    protected static $mandatory = [
         'basketitemReferenceId',
         'quantity',
         'amountPerUnit',
@@ -156,7 +151,22 @@ class BasketItem extends AbstractObject
     ];
 
     /**
-     * Amount discount setter
+     * @var bool $isMarketplace If the BasketItem is used for a marketplace.
+     */
+    private $isMarketplaceItem;
+
+    /**
+     * BasketItem constructor.
+     *
+     * @param bool $isMarketplace Determines if the BasketItem is used for a marketplace
+     */
+    public function __construct($isMarketplace = false)
+    {
+        $this->isMarketplaceItem = $isMarketplace;
+    }
+
+    /**
+     * Sets the discount amount.
      *
      * @param int $value
      *
@@ -169,7 +179,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Amount gross setter
+     * Sets the gross amount.
      *
      * @param int $value
      *
@@ -182,7 +192,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Amount net setter
+     * Sets the net amount.
      *
      * @param int $value
      *
@@ -195,7 +205,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Amount per unit setter
+     * Sets the amount per unit.
      *
      * @param int $value
      *
@@ -208,7 +218,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Amount vat setter
+     * Sets the vat amount.
      *
      * @param int $value
      *
@@ -221,7 +231,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Article id setter
+     * Sets the article id.
      *
      * @param string $value
      *
@@ -234,7 +244,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Basket item reference id setter
+     * Sets the BasketItem reference id.
      *
      * @param string $value
      *
@@ -247,7 +257,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Description setter
+     * Sets the description.
      *
      * @param string $value
      *
@@ -276,7 +286,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Position setter
+     * Sets the position.
      *
      * @param int $position
      *
@@ -295,7 +305,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Quantity setter
+     * Sets the quantity.
      *
      * @param int $value
      *
@@ -308,7 +318,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Title setter
+     * Sets the title.
      *
      * @param string $value
      *
@@ -321,7 +331,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Type setter
+     * Sets the type.
      *
      * @param string $value
      *
@@ -334,7 +344,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Unit setter
+     * Sets the unit.
      *
      * @param string $value
      *
@@ -347,7 +357,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Vat setter
+     * Sets the vat.
      *
      * @param int $value
      *
@@ -360,6 +370,99 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Sets the vat rate.
+     *
+     * @param float $vatRate
+     *
+     * @return $this
+     */
+    public function setVatRate($vatRate)
+    {
+        $this->vatRate = $vatRate;
+        return $this;
+    }
+
+    /**
+     * Sets the marketplace channel.
+     *
+     * @param string $channel
+     *
+     * @return $this
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+        return $this;
+    }
+
+    /**
+     * Sets the transaction id.
+     *
+     * @param string $transactionId
+     *
+     * @return $this
+     */
+    public function setTransactionId($transactionId)
+    {
+        $this->transactionId = $transactionId;
+        return $this;
+    }
+
+    /**
+     * Sets the usage.
+     *
+     * @param string $usage
+     *
+     * @return $this
+     */
+    public function setUsage($usage)
+    {
+        $this->usage = $usage;
+        return $this;
+    }
+
+    /**
+     * Sets the commission rate.
+     *
+     * @param float $commissionRate
+     *
+     * @return $this
+     */
+    public function setCommissionRate($commissionRate)
+    {
+        $this->commissionRate = $commissionRate;
+        return $this;
+    }
+
+    /**
+     * Sets the voucher amount.
+     *
+     * @param int $voucherAmount
+     *
+     * @return $this
+     */
+    public function setVoucherAmount($voucherAmount)
+    {
+        $this->voucherAmount = $voucherAmount;
+        return $this;
+    }
+
+    /**
+     * Sets the voucher id.
+     *
+     * @param string $voucherId
+     *
+     * @return $this
+     */
+    public function setVoucherId($voucherId)
+    {
+        $this->voucherId = $voucherId;
+        return $this;
+    }
+
+    /**
+     * Returns the position.
+     *
      * @return int
      */
     public function getPosition()
@@ -368,6 +471,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the reference id.
+     *
      * @return string
      */
     public function getReferenceId()
@@ -376,6 +481,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the unit.
+     *
      * @return string
      */
     public function getUnit()
@@ -392,6 +499,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the discount amount.
+     *
      * @return int
      */
     public function getAmountDiscount()
@@ -400,6 +509,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the vat.
+     *
      * @return int
      */
     public function getVat()
@@ -408,6 +519,18 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the vat rate.
+     *
+     * @return float
+     */
+    public function getVatRate()
+    {
+        return $this->vatRate;
+    }
+
+    /**
+     * Returns the gross amount.
+     *
      * @return int
      */
     public function getAmountGross()
@@ -416,6 +539,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the vat amount.
+     *
      * @return int
      */
     public function getAmountVat()
@@ -424,6 +549,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the amount per unit.
+     *
      * @return int
      */
     public function getAmountPerUnit()
@@ -432,6 +559,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the net amount.
+     *
      * @return int
      */
     public function getAmountNet()
@@ -440,6 +569,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the article id.
+     *
      * @return string
      */
     public function getArticleId()
@@ -448,6 +579,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the type.
+     *
      * @return string
      */
     public function getType()
@@ -456,6 +589,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the title.
+     *
      * @return string
      */
     public function getTitle()
@@ -464,6 +599,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the description.
+     *
      * @return string
      */
     public function getDescription()
@@ -472,6 +609,8 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns the image url.
+     *
      * @return string
      */
     public function getImageUrl()
@@ -480,7 +619,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the marketplace channel.
      *
      * @return string
      */
@@ -490,20 +629,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
-     *
-     * @param string $channel
-     *
-     * @return $this
-     */
-    public function setChannel($channel)
-    {
-        $this->channel = $channel;
-        return $this;
-    }
-
-    /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the transaction id.
      *
      * @return string
      */
@@ -513,20 +639,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
-     *
-     * @param string $transactionId
-     *
-     * @return $this
-     */
-    public function setTransactionId($transactionId)
-    {
-        $this->transactionId = $transactionId;
-        return $this;
-    }
-
-    /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the usage.
      *
      * @return string
      */
@@ -536,22 +649,9 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the commission rate.
      *
-     * @param string $usage
-     *
-     * @return $this
-     */
-    public function setUsage($usage)
-    {
-        $this->usage = $usage;
-        return $this;
-    }
-
-    /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
-     *
-     * @return int
+     * @return float
      */
     public function getCommissionRate()
     {
@@ -559,20 +659,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
-     *
-     * @param int $commissionRate
-     *
-     * @return $this
-     */
-    public function setCommissionRate($commissionRate)
-    {
-        $this->commissionRate = $commissionRate;
-        return $this;
-    }
-
-    /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the voucher amount.
      *
      * @return int
      */
@@ -582,20 +669,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
-     *
-     * @param int $voucherAmount
-     *
-     * @return $this
-     */
-    public function setVoucherAmount($voucherAmount)
-    {
-        $this->voucherAmount = $voucherAmount;
-        return $this;
-    }
-
-    /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * Returns the voucher id.
      *
      * @return string
      */
@@ -605,20 +679,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
-     *
-     * @param string $voucherId
-     *
-     * @return $this
-     */
-    public function setVoucherId($voucherId)
-    {
-        $this->voucherId = $voucherId;
-        return $this;
-    }
-
-    /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * @todo property is yet undocumented in the Integration_Guide (v1.2)!
      *
      * @return string
      */
@@ -628,7 +689,7 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * @todo property is yet undocumented in the Integration_Guide (v1.1)!
+     * @todo property is yet undocumented in the Integration_Guide (v1.2)!
      *
      * @param string $articleCategory
      *
@@ -641,13 +702,34 @@ class BasketItem extends AbstractObject
     }
 
     /**
+     * Returns if the BasketItem is used for marketplace purposes.
+     *
+     * @return bool
+     */
+    public function isMarketplaceItem()
+    {
+        return $this->isMarketplaceItem;
+    }
+
+    /**
+     * Sets the boolean that determines if the BasketItem is used for a marketplace.
+     *
+     * @param bool $isMarketplaceItem
+     */
+    public function setIsMarketplaceItem($isMarketplaceItem = true)
+    {
+        $this->isMarketplaceItem = $isMarketplaceItem;
+    }
+
+    /**
+     * Returns an array that is used for the JSON representation when using json_encode or toJson().
+     *
      * @return array
      */
     public function jsonSerialize()
     {
-        // TODO: add channel, transactionId, usage, commisionRate, voucherAmount, voucherId, and articleCategory
-        // TODO: if documented and ready to release.
-        return [
+        // TODO: add articleCategory if documented and ready to release.
+        $result = [
             'position' => $this->position,
             'basketItemReferenceId' => $this->basketItemReferenceId,
             'articleId' => $this->articleId,
@@ -662,8 +744,22 @@ class BasketItem extends AbstractObject
             'quantity' => $this->quantity,
             'vat' => $this->vat,
             'type' => $this->type,
-            'imageUrl' => $this->imageUrl
+            'imageUrl' => $this->imageUrl,
+            'voucherAmount' => $this->voucherAmount,
+            'voucherId' => $this->voucherId,
         ];
+
+        if ($this->isMarketplaceItem()) {
+            $result = array_merge($result, [
+                'channel' => $this->channel,
+                'commissionRate' => $this->commissionRate,
+                'transactionId' => $this->transactionId,
+                'usage' => $this->usage,
+                'vatRate' => $this->vatRate,
+            ]);
+        }
+
+        return $result;
     }
 
     /**

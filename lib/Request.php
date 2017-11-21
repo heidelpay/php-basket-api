@@ -11,14 +11,17 @@ use Heidelpay\PhpBasketApi\Object\Basket;
 /**
  * heidelpay Basket API Request
  *
+ * Implementation for creating and sending a request to the heidelpay Basket API.
+ *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/php-basket-api
+ * @link http://dev.heidelpay.com/php-basket-api
  *
- * @author Jens Richter
+ * @author Jens Richter <development@heidelpay.de>
+ * @author Stephano Vogel <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\interaction\object
+ * @package heidelpay\php-basket-api\Interaction\Object
  */
 class Request extends AbstractObject
 {
@@ -33,27 +36,27 @@ class Request extends AbstractObject
     const URL_LIVE = 'https://heidelpay.hpcgw.net/ngw/basket/';
 
     /**
-     * @var Authentication The authentication object
+     * @var Authentication $authentication The authentication instance
      */
     protected $authentication;
 
     /**
-     * @var Basket The basket object
+     * @var Basket $basket The basket object
      */
     protected $basket;
 
     /**
-     * @var bool If the request is being sent to the test environment.
+     * @var bool $isSandbox If the request is being sent to the test environment
      */
     protected $isSandbox = true;
 
     /**
-     * @var AdapterInterface
+     * @var AdapterInterface $adapter The adapter for sending requests to the API
      */
     protected $adapter;
 
     /**
-     * Request constructor.
+     * Request class constructor
      *
      * @param Authentication|null $auth
      * @param Basket|null         $basket
@@ -96,7 +99,7 @@ class Request extends AbstractObject
     }
 
     /**
-     * Sets the authentication object
+     * Sets the authentication object.
      *
      * @param string $login
      * @param string $password

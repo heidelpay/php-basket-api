@@ -9,16 +9,15 @@ use Heidelpay\PhpBasketApi\Request;
 /**
  * Standard curl adapter
  *
- * You can use this adapter for your project or you can
- * create one based on a standard library like zend-http
- * or guzzlehttp.
+ * You can use this adapter for your project or you can create one
+ * based on a standard library like zend-http or guzzlehttp.
  *
  * @license Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
  * @link https://dev.heidelpay.de/PhpApi
  *
- * @author Jens Richter
+ * @author Jens Richter <development@heidelpay.de>
  *
  * @package heidelpay
  */

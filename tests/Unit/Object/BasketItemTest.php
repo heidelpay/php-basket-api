@@ -10,13 +10,13 @@ use PHPUnit\Framework\TestCase;
  * Unit tests for the BasketItem Objects
  *
  * @license Use of this software requires acceptance of the License Agreement. See LICENSE file.
- * @copyright Copyright © 2016-present Heidelberger Payment GmbH. All rights reserved.
+ * @copyright Copyright © 2017-present Heidelberger Payment GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.de/php-basket-api
+ * @link http://dev.heidelpay.com/php-basket-api
  *
- * @author Stephano Vogel
+ * @author Stephano Vogel <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\tests\unit\basketitem
+ * @package heidelpay\php-basket-api\tests\unit
  */
 class BasketItemTest extends TestCase
 {
@@ -133,6 +133,23 @@ class BasketItemTest extends TestCase
 
         $this->basketItem->setVat($vat7);
         $this->assertEquals($vat7, $this->basketItem->getVat());
+    }
+
+    /**
+     * Unit test for the vat rate
+     */
+    public function testVatRate()
+    {
+        $vatRate7 = 7.00;
+        $vatRate19 = 19.00;
+
+        $this->assertNull($this->basketItem->getVatRate());
+
+        $this->basketItem->setVatRate($vatRate7);
+        $this->assertEquals($vatRate7, $this->basketItem->getVatRate());
+
+        $this->basketItem->setVatRate($vatRate19);
+        $this->assertEquals($vatRate19, $this->basketItem->getVatRate());
     }
 
     /**
@@ -329,7 +346,7 @@ class BasketItemTest extends TestCase
      */
     public function testCommissionRate()
     {
-        $rate = 5.5;
+        $rate = 5.50;
 
         $this->assertNull($this->basketItem->getCommissionRate());
 
@@ -395,7 +412,7 @@ class BasketItemTest extends TestCase
     }
 
     /**
-     * Test the implementation of the __isset magic method
+     * Test the implementation of the __set & __isset magic methods
      */
     public function testIssetMagicMethodCases()
     {
@@ -404,8 +421,8 @@ class BasketItemTest extends TestCase
 
         $this->assertFalse(isset($this->basketItem->notExistingProperty));
 
-        // set the amountNet to ensure isset will return true now.
-        $this->basketItem->setAmountNet(100);
+        // set the amountNet via magic setter to ensure isset will return true now.
+        $this->basketItem->amountNet = 100;
         $this->assertTrue(isset($this->basketItem->amountNet));
     }
 
@@ -431,6 +448,26 @@ class BasketItemTest extends TestCase
         $this->assertArrayHasKey('vat', $this->basketItem->jsonSerialize());
         $this->assertArrayHasKey('type', $this->basketItem->jsonSerialize());
         $this->assertArrayHasKey('imageUrl', $this->basketItem->jsonSerialize());
+
+        $this->assertNotEmpty($this->basketItem->toJson());
+    }
+
+    /**
+     * Unit test for a BasketItem with marketplace usage.
+     *
+     * @depends testJsonSerializable
+     */
+    public function testJsonSerializableAsMarketplaceItem()
+    {
+        $this->basketItem->setIsMarketplaceItem();
+
+        $this->assertTrue($this->basketItem->isMarketplaceItem());
+
+        $this->assertArrayHasKey('channel', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('commissionRate', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('transactionId', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('usage', $this->basketItem->jsonSerialize());
+        $this->assertArrayHasKey('vatRate', $this->basketItem->jsonSerialize());
 
         $this->assertNotEmpty($this->basketItem->toJson());
     }
