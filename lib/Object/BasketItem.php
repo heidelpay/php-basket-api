@@ -85,7 +85,7 @@ class BasketItem extends AbstractObject
 
     /**
      * @var string $type (optional) The type of the basket item, e.g. "goods", "shipment", "voucher" or "digital" with
-     *                              a maximum length of 255
+     *             a maximum length of 255
      */
     protected $type;
 
