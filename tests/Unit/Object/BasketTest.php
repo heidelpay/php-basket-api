@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Jens Richter <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\tests\unit
+ * @package heidelpay\php-basket-api\tests\unit\object
  */
 class BasketTest extends TestCase
 {

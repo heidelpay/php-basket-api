@@ -54,11 +54,6 @@ class BasketItem extends AbstractObject
     protected $vat;
 
     /**
-     * @var float $vatRate The Vat rate with 2 decimal places (optional)
-     */
-    protected $vatRate;
-
-    /**
      * @var int $amountGross The gross amount (conditional), means amountNet + amountVat.
      */
     protected $amountGross;
@@ -370,19 +365,6 @@ class BasketItem extends AbstractObject
     }
 
     /**
-     * Sets the vat rate.
-     *
-     * @param float $vatRate
-     *
-     * @return $this
-     */
-    public function setVatRate($vatRate)
-    {
-        $this->vatRate = $vatRate;
-        return $this;
-    }
-
-    /**
      * Sets the marketplace channel.
      *
      * @param string $channel
@@ -516,16 +498,6 @@ class BasketItem extends AbstractObject
     public function getVat()
     {
         return $this->vat;
-    }
-
-    /**
-     * Returns the vat rate.
-     *
-     * @return float
-     */
-    public function getVatRate()
-    {
-        return $this->vatRate;
     }
 
     /**
@@ -755,7 +727,6 @@ class BasketItem extends AbstractObject
                 'commissionRate' => $this->commissionRate,
                 'transactionId' => $this->transactionId,
                 'usage' => $this->usage,
-                'vatRate' => $this->vatRate,
             ]);
         }
 

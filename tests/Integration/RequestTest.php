@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Stephano Vogel <development@heidelpay.de>
  *
- * @package heidelpay\php-basket-api\tests\integration\request
+ * @package heidelpay\php-basket-api\tests\integration
  */
 class RequestTest extends TestCase
 {
@@ -118,9 +118,9 @@ class RequestTest extends TestCase
         $basketItemThree->setAmountVat(120);
         $basketItemThree->setAmountDiscount(0);
 
-        $this->basket->addBasketItem($basketItemOne, null, false);
-        $this->basket->addBasketItem($basketItemTwo, null, false);
-        $this->basket->addBasketItem($basketItemThree, null, false);
+        $this->basket->addBasketItem($basketItemOne);
+        $this->basket->addBasketItem($basketItemTwo);
+        $this->basket->addBasketItem($basketItemThree);
     }
 
     /**
@@ -323,6 +323,59 @@ class RequestTest extends TestCase
 
         // compare the original basket with the overwritten one (which we just loaded again via api call)
         $this->assertEquals(2, $response->getBasket()->getItemCount());
+    }
+
+    /**
+     * @return string
+     */
+    public function testAddBasketWithMarketplaceBasketItemProperties()
+    {
+        // set properties that are meant to be used by Marketplaces
+        $this->basket->getBasketItemByPosition(1)->setCommissionRate(5.00);
+        $this->basket->getBasketItemByPosition(1)->setTransactionId('heidelpay-php-basket-api-test-1');
+        $this->basket->getBasketItemByPosition(1)->setUsage('Marketplace Test');
+        $this->basket->getBasketItemByPosition(1)->setIsMarketplaceItem();
+
+        $request = new Request($this->auth, $this->basket);
+        $response = $request->addNewBasket();
+
+        $this->assertEquals(Response::RESULT_ACK, $response->getResult());
+        $this->assertEquals(Response::METHOD_ADDNEWBASKET, $response->getMethod());
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_ADDNEWBASKET, $response->printMessage());
+
+        $this->assertNotNull($response->getBasketId(), 'BasketId is null.');
+        $this->assertNotNull($response->getResult(), 'Result is null.');
+        $this->assertNotNull($response->getMethod(), 'Method is null.');
+        $this->assertTrue($response->isSuccess(), 'Response is not success.');
+        $this->assertFalse($response->isFailure(), 'Response is failure.');
+
+        return $response->getBasketId();
+    }
+
+    /**
+     * @depends testAddBasketWithMarketplaceBasketItemProperties
+     *
+     * @param string $basketId
+     */
+    public function testRetrieveBasketWithMarketplaceBasketItemProperties($basketId)
+    {
+        $request = new Request($this->auth);
+        $response = $request->retrieveBasket($basketId);
+
+        // test, if Response matches expected values
+        $this->assertEquals(Response::RESULT_ACK, $response->getResult());
+        $this->assertEquals(Response::METHOD_GETBASKET, $response->getMethod());
+        $this->assertEquals($basketId, $response->getBasketId());
+
+        $this->assertContains('SUCCESS', $response->printMessage());
+        $this->assertContains(Response::METHOD_GETBASKET, $response->printMessage());
+
+        $this->assertNotNull($response->getBasket()->getBasketItemByPosition(1)->getCommissionRate());
+        $this->assertNotNull($response->getBasket()->getBasketItemByPosition(1)->getTransactionId());
+        $this->assertNotNull($response->getBasket()->getBasketItemByPosition(1)->getUsage());
+        $this->assertTrue($response->getBasket()->getBasketItemByPosition(1)->isMarketplaceItem());
     }
 
     /**
