@@ -2,13 +2,18 @@
   "name": "heidelpay/php-basket-api",
   "description": "Client library for heidelpay basket api.",
   "license": "Use of this software requires acceptance of the License Agreement. See LICENSE file.",
-  "version": "17.8.8",
   "authors": [
     {
-      "name": "Jens Richter"
+      "name": "Jens Richter",
+      "email": "development@heidelpay.de",
+      "homepage": "http://dev.heidelpay.com",
+      "role": "Developer"
     },
     {
-      "name": "Stephano Vogel"
+      "name": "Stephano Vogel",
+      "email": "development@heidelpay.de",
+      "homepage": "http://dev.heidelpay.com",
+      "role": "Developer"
     }
   ],
   "require": {
