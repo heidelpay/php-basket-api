@@ -39,7 +39,7 @@
   "support": {
     "email": "development@heidelpay.com"
   },
-  "homepage": "https://dev.heidelpay.com",
+  "homepage": "http://dev.heidelpay.com",
   "minimum-stability": "dev",
   "type": "library",
   "keywords": [

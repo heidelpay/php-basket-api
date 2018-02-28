@@ -49,7 +49,7 @@ V. Beschränkungen
 
 VI. Datenschutz
 
-Es gelten die Datenschutzbestimmugen, abrufbar unter https://dev.heidelpay.com/datenschutzerklaerung/ .
+Es gelten die Datenschutzbestimmugen, abrufbar unter https://dev.heidelpay.de/datenschutzerklaerung/ .
 
 VII. FREISTELLUNG
 

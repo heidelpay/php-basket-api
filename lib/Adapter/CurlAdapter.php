@@ -15,7 +15,7 @@ use Heidelpay\PhpBasketApi\Request;
  * @license Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  * @copyright Copyright © 2017-present heidelpay GmbH. All rights reserved.
  *
- * @link https://dev.heidelpay.com/PhpBaketApi
+ * @link http://dev.heidelpay.com/PhpBaketApi
  *
  * @author Jens Richter <development@heidelpay.com>
  *
